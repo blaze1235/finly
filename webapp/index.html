@@ -16,7 +16,7 @@ html,body{height:100%;height:100dvh;background:#F4F5F7;font-family:'DM Sans',san
 @keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
 .anim-up{animation:slideUp .22s ease forwards;}
 .anim-fade{animation:fadeIn .18s ease forwards;}
-.screen{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;}
+.screen{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 /* NAV */
 .navbar{background:#fff;padding:6px 4px 18px;display:flex;gap:2px;flex-shrink:0;}
@@ -93,18 +93,18 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .srow+.srow::before{content:'';position:absolute;top:0;left:48px;right:0;height:1px;background:#ECEEF2;}
 .s-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 /* MODAL OVERLAY */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .15s ease;}
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:50;display:flex;align-items:flex-end;animation:fadeIn .15s ease;}
 .msheet{background:#fff;border-radius:28px 28px 0 0;width:100%;padding:16px 20px 36px;animation:slideUp .2s ease;max-height:90%;}
 .mhandle{width:40px;height:4px;border-radius:2px;background:#ECEEF2;margin:0 auto 18px;}
 /* TOAST */
 .toast{position:absolute;top:16px;left:12px;right:12px;z-index:100;background:#1C1C1E;border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideDown .25s ease;}
 /* STREAK BANNER */
-.streak-ban{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1.5px solid rgba(245,158,11,.2);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;position:relative;overflow:hidden;}
-.streak-ban::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2) 0%,transparent 70%);}
+.streak-ban{background:linear-gradient(135deg,#1C1C1E,#28282C);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.streak-ban::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.12) 0%,transparent 70%);}
 .sdot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
 .sdot.dn{background:#F59E0B;color:#1C1C1E;}
 .sdot.td{background:rgba(245,158,11,.15);border:1.5px solid #F59E0B;color:#F59E0B;}
-.sdot.ms{background:rgba(17,19,24,.1);border:1.5px solid rgba(17,19,24,.08);color:rgba(17,19,24,.2);}
+.sdot.ms{background:#222;color:#444;}
 /* TYPE ROW */
 .typerow{display:flex;gap:5px;margin-bottom:16px;background:#F4F5F7;border-radius:14px;padding:4px;}
 .typebtn{flex:1;padding:12px 6px;border-radius:11px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:#6B7280;}
@@ -143,74 +143,10 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 /* REWARDS HERO */
 .rw-hero{background:linear-gradient(160deg,#1a0a3e,#2d1069,#1C1C1E);padding:20px 20px 0;position:relative;overflow:hidden;flex-shrink:0;}
 .rw-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);}
-/* DARK MODE */
-.dark{background:#111318!important;}
-.dark .navbar{background:#1C1C1E;border-top:1px solid rgba(255,255,255,.06);}
-.dark .ni.act{background:rgba(255,255,255,.07);}
-.dark .ni-lbl{color:#4B5563;}
-.dark .ni.act .ni-lbl{color:#fff;}
-.dark .ni-dot{border-color:#111318;}
-.dark .ph{background:#111318;}
-.dark .back{background:#1C1C1E;color:#fff;}
-.dark .ph-title{color:#fff;}
-.dark .ph-action{background:#1C1C1E;color:#9CA3AF;}
-.dark .card{background:#1C1C1E;}
-.dark .txc{background:#1C1C1E;}
-.dark .txc:active{background:#252529;}
-.dark .finput{background:#252529;color:#fff;}
-.dark textarea.finput{color:#fff;}
-.dark .sinput{background:#252529;color:#fff;}
-.dark .flabel{color:#4B5563;}
-.dark .catbtn{background:#252529;}
-.dark .catbtn-name{color:#e5e7eb;}
-.dark .typerow{background:#252529;}
-.dark .typebtn{color:#9CA3AF;}
-.dark .fpill{background:#252529;color:#9CA3AF;}
-.dark .fpill.act{background:#fff;color:#111318;}
-.dark .kpi-row{background:#1C1C1E;}
-.dark .kpi-lab{color:#4B5563;}
-.dark .budg-item{background:#1C1C1E;}
-.dark .msheet{background:#1C1C1E;}
-.dark .mhandle{background:rgba(255,255,255,.1);}
-.dark .scard{background:#1C1C1E;}
-.dark .srow:active{background:#252529;}
-.dark .srow+.srow::before{background:rgba(255,255,255,.06);}
-.dark .btn-gray{background:#252529;color:#fff;}
-.dark .ptrack{background:#252529;}
-.dark .currrow{background:#252529;}
-.dark .currp{color:#9CA3AF;}
-.dark .currp.act{background:#fff;color:#111318;}
-.dark .tog.off{background:#374151;}
-.dark .streak-ban{background:linear-gradient(135deg,#1C1C1E,#252529);}
-.dark .sdot.dn{background:#4ADE80;color:#111318;}
-.dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
-.dark .sdot.ms{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.2);}
-.dark .wallet{background:#252529;}
-.dark .hero-card{background:#1C1C1E;}
-.dark .sum-card{border-color:rgba(255,255,255,.08)!important;}
-.dark .success-wrap{background:#111318;}
-.dark .logo{color:#fff;}
-.dark .logo span{color:#fff;}
-.dark .streak-ban{background:linear-gradient(135deg,#1C1C1E,#25252A);}
-.dark .sdot.dn{background:#4ADE80;color:#111318;}
-.dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
-.dark .prof-hero{background:#0d0d11;border-bottom:1px solid rgba(255,255,255,.06);}
-.dark .rw-hero{background:linear-gradient(160deg,#12072a,#1d0a44,#111318);}
-.hero-card{background:#fff;border:1.5px solid rgba(17,19,24,.07);}
-.dark .hero-card{background:#1C1C1E;border-color:transparent;}
-.dark .btn-ink{background:#fff;color:#111318;}
-.dark .btn-ink:active{background:#e5e7eb;}
-.mpill{padding:8px 16px;border-radius:999px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;background:#ECEEF2;color:#6B7280;transition:all .12s;}
-.mpill.act{background:#111318;color:#fff;}
-.dark .mpill{background:#252529;color:#9CA3AF;}
-.dark .mpill.act{background:#fff;color:#111318;}
-.cchip{display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:999px;background:#ECEEF2;font-size:11px;font-weight:700;color:#6B7280;cursor:pointer;flex-shrink:0;transition:all .12s;}
-.cchip.act{background:#111318;color:#fff;}
-.dark .cchip{background:#252529;color:#9CA3AF;}
-.dark .cchip.act{background:#fff;color:#111318;}
 </style>
   <!-- Telegram WebApp SDK must load before the API client so initData is available -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Set your Railway API URL here, or inject via build -->
   <script>window.FINLY_API_URL = "https://finly-tracker.up.railway.app";</script>
   <script>
   /* ── API CLIENT ── */
@@ -273,30 +209,20 @@ const TG_INITIAL = (TGUser?.first_name || "А")[0].toUpperCase();
 const TG_USERNAME = TGUser?.username ? "@"+TGUser.username : "@alisherjon";
 
 /* ── TOKENS ── */
-const C_LIGHT={bg:"#F4F5F7",sur:"#FFFFFF",ink:"#111318",ink2:"#6B7280",ink3:"#B0B7C3",bdr:"#ECEEF2",
+const C={bg:"#F4F5F7",sur:"#FFFFFF",ink:"#111318",ink2:"#6B7280",ink3:"#B0B7C3",bdr:"#ECEEF2",
   gr:"#16A34A",grBg:"#F0FDF4",grMd:"#DCFCE7",rd:"#DC2626",rdBg:"#FEF2F2",rdMd:"#FEE2E2",
   am:"#D97706",amBg:"#FFFBEB",bl:"#2563EB",blBg:"#EFF6FF",pu:"#7C3AED",puBg:"#FAF5FF",
-  dk:"#1C1C1E",am2:"#F59E0B",card:"#fff"};
-const C_DARK={bg:"#111318",sur:"#1C1C1E",ink:"#FFFFFF",ink2:"#9CA3AF",ink3:"#4B5563",bdr:"rgba(255,255,255,.08)",
-  gr:"#4ADE80",grBg:"rgba(74,222,128,.12)",grMd:"rgba(74,222,128,.2)",
-  rd:"#F87171",rdBg:"rgba(248,113,113,.12)",rdMd:"rgba(248,113,113,.2)",
-  am:"#FCD34D",amBg:"rgba(252,211,77,.1)",bl:"#60A5FA",blBg:"rgba(96,165,250,.1)",
-  pu:"#A78BFA",puBg:"rgba(167,139,250,.1)",dk:"#0A0A0C",am2:"#F59E0B",card:"#1C1C1E"};
-let C=Object.assign({},C_LIGHT);
+  dk:"#1C1C1E",am2:"#F59E0B"};
 const F="'Syne',sans-serif";
 const fmt=n=>Math.round(n).toLocaleString("ru-RU");
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
 const dispDate=s=>{const t=today();if(s===t)return"Сегодня";const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");if(s===ys)return"Вчера";return s.slice(8)+"."+s.slice(5,7);};
 
-/* ── GLOBAL TOAST ── */
-let _setToast=null;
-function showToast(t){if(_setToast)_setToast(t);}
-
 const EXP_CATS=[
   {icon:"🛒",name:"Продукты"},{icon:"🏠",name:"Жильё"},{icon:"🚌",name:"Транспорт"},
   {icon:"🍕",name:"Кафе"},{icon:"💊",name:"Здоровье"},{icon:"🎬",name:"Развлечения"},
-  {icon:"👕",name:"Одежда"},{icon:"📚",name:"Образование"},{icon:"🤷",name:"Забыл"},{icon:"📦",name:"Прочее"},
+  {icon:"👕",name:"Одежда"},{icon:"📚",name:"Образование"},{icon:"🤷",name:"Забыл"},{icon:"•••",name:"Прочее"},
 ];
 const INC_CATS=[
   {icon:"💼",name:"Зарплата"},{icon:"💹",name:"Подработка"},{icon:"🏦",name:"Инвестиции"},{icon:"🎁",name:"Подарок"},
@@ -336,9 +262,9 @@ function Streak({streak}){
   return h("div",{className:"streak-ban"},
     h("div",{style:{fontSize:32,flexShrink:0}},"🔥"),
     h("div",{style:{flex:1}},
-      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:C.ink,lineHeight:1}},
+      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:"#fff",lineHeight:1}},
         h("span",{style:{color:C.am2}},streak)," дней подряд"),
-      h("div",{style:{fontSize:11,color:C.ink3,marginTop:2,fontWeight:600}},"Не упустите серию!"),
+      h("div",{style:{fontSize:11,color:"#666",marginTop:2,fontWeight:600}},"Не упустите серию!"),
       h("div",{style:{display:"flex",gap:5,marginTop:8}},
         days.map((t,i)=>h("div",{key:i,className:"sdot "+t},t==="dn"?"✓":t==="td"?"·":"·")))
     ),
@@ -347,8 +273,8 @@ function Streak({streak}){
 }
 function NavBar({tab,setTab,hasDraft}){
   const items=[
-    {id:"home",icon:"🏠",label:"Главная"},
-    {id:"add",icon:"✚",label:"Запись"},
+    {id:"home",icon:"⊞",label:"Главная"},
+    {id:"add",icon:"＋",label:"Запись"},
     {id:"analytics",icon:"📊",label:"Отчёты"},
     {id:"rewards",icon:"🏆",label:"Прогресс"},
     {id:"profile",icon:"👤",label:"Профиль"},
@@ -520,19 +446,20 @@ function HomeScreen({data,setTab,onTxTap}){
   return h("div",{className:"screen anim-fade"},
     h("div",{className:"scroll",style:{padding:"8px 16px 0"}},
       // balance hero card
-      h("div",{className:"hero-card",style:{borderRadius:24,padding:"20px 20px 16px",marginBottom:10,position:"relative",overflow:"hidden"}},
+      h("div",{style:{background:C.ink,borderRadius:24,padding:"20px 20px 16px",marginBottom:10,position:"relative",overflow:"hidden"}},
+        h("div",{style:{position:"absolute",top:-50,right:-50,width:150,height:150,borderRadius:"50%",background:"rgba(255,255,255,.03)"}}),
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:18,position:"relative"}},
           h("div",null,
-            h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:3}},greet.toUpperCase()),
-            h("div",{style:{fontSize:17,fontWeight:700,color:C.ink}},TG_NAME),
-            h("div",{style:{fontSize:11,color:C.ink3,marginTop:1}},days[d.getDay()]+", "+d.getDate()+" "+mons[d.getMonth()])
+            h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:3}},greet.toUpperCase()),
+            h("div",{style:{fontSize:17,fontWeight:700,color:"#fff"}},TG_NAME),
+            h("div",{style:{fontSize:11,color:"rgba(255,255,255,.3)",marginTop:1}},days[d.getDay()]+", "+d.getDate()+" "+mons[d.getMonth()])
           ),
-          h("div",{style:{width:42,height:42,borderRadius:14,background:C.ink,color:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,flexShrink:0}},TG_INITIAL)
+          h("div",{style:{width:42,height:42,borderRadius:14,background:"rgba(255,255,255,.1)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,flexShrink:0}},TG_INITIAL)
         ),
         h("div",{style:{marginBottom:18,position:"relative"}},
-          h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:5}},"ОБЩИЙ БАЛАНС"),
-          h("div",{style:{fontFamily:F,fontSize:38,fontWeight:800,color:C.ink,lineHeight:1.1}},fmt(Math.abs(balance))),
-          h("div",{style:{fontSize:12,color:C.ink3,marginTop:4}},(balance<0?"−  ":"")+"сум")
+          h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.3)",letterSpacing:2,textTransform:"uppercase",marginBottom:5}},"ОБЩИЙ БАЛАНС"),
+          h("div",{style:{fontFamily:F,fontSize:38,fontWeight:800,color:"#fff",lineHeight:1.1}},fmt(Math.abs(balance))),
+          h("div",{style:{fontSize:12,color:"rgba(255,255,255,.35)",marginTop:4}},(balance<0?"−  ":"")+"сум")
         ),
         h("div",{style:{display:"flex",gap:8,position:"relative"}},
           h("div",{style:{flex:1,background:"rgba(74,222,128,.1)",borderRadius:14,padding:"12px 14px"}},
@@ -556,7 +483,7 @@ function HomeScreen({data,setTab,onTxTap}){
       h("div",{style:{height:16}})
     ),
     h("div",{style:{padding:"0 16px 10px"}},
-      h("div",{className:"btn btn-ink",style:{width:"100%",fontSize:16,padding:"18px 20px"},onClick:()=>setTab("add")},
+      h("div",{className:"btn btn-ink",style:{width:"100%",fontSize:14},onClick:()=>setTab("add")},
         "+ НОВАЯ ЗАПИСЬ")
     )
   );
@@ -576,7 +503,6 @@ function AddScreen({data,setData,onSaved,setTab}){
   const cats=type==="expense"?EXP_CATS:INC_CATS;
   const canSave=amount.trim()&&selCat;
 
-  const[account,setAccount]=useState(()=>localStorage.getItem("finly_default_account")||"Карта");
   const[saving,setSaving]=useState(false);
   async function save(){
     if(!canSave||saving)return;
@@ -585,7 +511,7 @@ function AddScreen({data,setData,onSaved,setTab}){
     const finalAmt=currency==="$"?raw*(parseInt(usdRate.replace(/\D/g,""))||12700):raw;
     const body={type,cat_icon:selCat.icon,cat_name:selCat.name,
       note:note||selCat.name,amount:finalAmt,date_str:today(),
-      time_str:nowTime(),currency,recurring,account};
+      time_str:nowTime(),currency,recurring,account:"Карта"};
     try{
       const res=await API.addTx(body);
       setData(d=>({...d,txs:[res.tx,...d.txs],xp:res.total_xp,level:res.level,streak:res.streak}));
@@ -593,7 +519,7 @@ function AddScreen({data,setData,onSaved,setTab}){
     }catch(e){
       console.error(e);
       // Optimistic fallback so UI doesn't freeze
-      const tx={id:Date.now(),type,cat:selCat.icon,catName:selCat.name,note:note||selCat.name,amount:finalAmt,dateStr:today(),time:nowTime(),currency,recurring,account};
+      const tx={id:Date.now(),type,cat:selCat.icon,catName:selCat.name,note:note||selCat.name,amount:finalAmt,dateStr:today(),time:nowTime(),currency,recurring,account:"Карта"};
       setData(d=>({...d,txs:[tx,...d.txs],xp:d.xp+15}));
       onSaved(tx,15,data.xp+15);
     } finally{ setSaving(false); }
@@ -657,14 +583,6 @@ function AddScreen({data,setData,onSaved,setTab}){
             h("div",{className:"catbtn-icon"},c.icon),
             h("div",{className:"catbtn-name"},c.name)
           ))
-        ),
-        // account
-        h("label",{className:"flabel"},"СЧЁТ"),
-        h("div",{style:{display:"flex",gap:6,flexWrap:"wrap",marginBottom:14}},
-          [...(()=>{try{return JSON.parse(localStorage.getItem("finly_accounts")||"[]");}catch{return [];}})().map(a=>a.name),"Карта"].filter((v,i,a)=>a.indexOf(v)===i)
-          .map(name=>h("div",{key:name,onClick:()=>setAccount(name),
-            style:{padding:"8px 14px",borderRadius:22,fontFamily:F,fontSize:12,fontWeight:700,cursor:"pointer",
-              background:account===name?C.ink:C.bg,color:account===name?(document.getElementById("app").classList.contains("dark")?"#111318":"#fff"):C.ink2,transition:"all .12s"}},name))
         ),
         // note
         h("label",{className:"flabel"},"ПРИМЕЧАНИЕ"),
@@ -807,7 +725,9 @@ function AnalyticsScreen({data,onTxTap}){
     // month pills — derived from real data
     availMonths.length>0
       ?h("div",{style:{display:"flex",gap:6,overflow:"auto",padding:"0 16px 10px",flexShrink:0}},
-        availMonths.map(ym=>h("div",{key:ym,onClick:()=>selectMonth(ym),className:"mpill"+(selMonth===ym?" act":"")},
+        availMonths.map(ym=>h("div",{key:ym,onClick:()=>selectMonth(ym),
+          style:{padding:"8px 16px",borderRadius:999,fontFamily:F,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap",
+            background:selMonth===ym?C.ink:"#fff",color:selMonth===ym?"#fff":C.ink2,transition:"all .12s"}},
           fmtMonth(ym)))
       )
       :h("div",{style:{height:6}}),
@@ -819,7 +739,9 @@ function AnalyticsScreen({data,onTxTap}){
     // category chips — only show cats matching selected type
     allCats.length>0&&h("div",{style:{display:"flex",gap:6,overflow:"auto",padding:"0 16px 10px",flexShrink:0}},
       allCats.map(name=>h("div",{key:name,onClick:()=>setSelCats(p=>p.includes(name)?p.filter(c=>c!==name):[...p,name]),
-        className:"cchip"+(selCats.includes(name)?" act":"")},
+        style:{display:"flex",alignItems:"center",gap:4,padding:"7px 12px",borderRadius:999,
+          background:selCats.includes(name)?C.ink:"#fff",fontSize:11,fontWeight:700,
+          color:selCats.includes(name)?"#fff":C.ink2,cursor:"pointer",flexShrink:0,transition:"all .12s"}},
         (catIcons[name]||"")+" "+name))
     ),
     // search
@@ -904,7 +826,7 @@ function RewardsScreen({data,setData}){
         ),
         // tabs
         h("div",{style:{display:"flex",gap:4}},
-          tabs.map(t=>h("div",{key:t.id,onClick:()=>setSection(t.id),style:{flex:1,padding:"10px 4px",borderRadius:"12px 12px 0 0",fontFamily:F,fontSize:10,fontWeight:700,textAlign:"center",textTransform:"uppercase",cursor:"pointer",background:section===t.id?C.bg:"transparent",color:section===t.id?C.ink:"rgba(255,255,255,.4)",transition:"all .12s"}},t.l))
+          tabs.map(t=>h("div",{key:t.id,onClick:()=>setSection(t.id),style:{flex:1,padding:"10px 4px",borderRadius:"12px 12px 0 0",fontFamily:F,fontSize:10,fontWeight:700,textAlign:"center",textTransform:"uppercase",cursor:"pointer",background:section===t.id?"#F4F5F7":"transparent",color:section===t.id?C.ink:"rgba(255,255,255,.4)",transition:"all .12s"}},t.l))
         )
       )
     ),
@@ -919,7 +841,7 @@ function RewardsScreen({data,setData}){
            {icon:"📂",name:"Категория",pts:"+5 XP",desc:"Указать категорию"},
            {icon:"📊",name:"Отчёт",pts:"+5 XP",desc:"Открыть раздел аналитики"},
            {icon:"🥇",name:"Значок",pts:"+50–500",desc:"Разблокировать достижение"},
-          ].map(({icon,name,pts,desc})=>h("div",{key:name,style:{background:C.card,borderRadius:16,padding:"14px"}},
+          ].map(({icon,name,pts,desc})=>h("div",{key:name,style:{background:"#fff",borderRadius:16,padding:"14px"}},
             h("div",{style:{fontSize:26,marginBottom:8}}),
             h("div",{style:{fontSize:30,marginBottom:6}},icon),
             h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.ink,marginBottom:3}},name),
@@ -929,7 +851,7 @@ function RewardsScreen({data,setData}){
         ),
         // history
         h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"ИСТОРИЯ · СЕГОДНЯ"),
-        ...xpLog.map((e,i)=>h("div",{key:i,style:{background:C.card,borderRadius:14,padding:"12px 14px",marginBottom:7,display:"flex",alignItems:"center",gap:12}},
+        ...xpLog.map((e,i)=>h("div",{key:i,style:{background:"#fff",borderRadius:14,padding:"12px 14px",marginBottom:7,display:"flex",alignItems:"center",gap:12}},
           h("div",{style:{width:36,height:36,borderRadius:11,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}},e.icon),
           h("div",{style:{flex:1}},
             h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},e.label),
@@ -941,7 +863,7 @@ function RewardsScreen({data,setData}){
       section==="badges"&&h("div",null,
         h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"ПОЛУЧЕНО"),
         h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}},
-          achievements.filter(a=>a.earned).map(a=>h("div",{key:a.id,style:{background:C.card,borderRadius:16,padding:"12px 8px",textAlign:"center"}},
+          achievements.filter(a=>a.earned).map(a=>h("div",{key:a.id,style:{background:"#fff",borderRadius:16,padding:"12px 8px",textAlign:"center"}},
             h("div",{style:{width:48,height:48,borderRadius:15,background:a.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 8px"}},a.icon),
             h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink,lineHeight:1.2,marginBottom:2}},a.name),
             h("div",{style:{fontSize:10,color:C.ink3}},a.desc),
@@ -951,7 +873,7 @@ function RewardsScreen({data,setData}){
         ),
         h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"В ПРОЦЕССЕ"),
         h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}},
-          achievements.filter(a=>!a.earned).map(a=>h("div",{key:a.id,style:{background:a.locked?C.bg:C.card,borderRadius:16,padding:"12px 8px",textAlign:"center"}},
+          achievements.filter(a=>!a.earned).map(a=>h("div",{key:a.id,style:{background:a.locked?C.bg:"#fff",borderRadius:16,padding:"12px 8px",textAlign:"center"}},
             h("div",{style:{width:48,height:48,borderRadius:15,background:a.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 8px",filter:a.locked?"grayscale(1)":"none",opacity:a.locked?.3:1}},a.icon),
             h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:a.locked?C.ink3:C.ink,lineHeight:1.2,marginBottom:2}},a.name),
             h("div",{style:{fontSize:10,color:C.ink3}},a.desc),
@@ -1016,7 +938,7 @@ function LeaderboardSection({data}){
     ),
     ...rows.map(f=>{
       const color=BG_COLORS[(f.rank-1)%BG_COLORS.length];
-      return h("div",{key:f.id,style:{display:"flex",alignItems:"center",gap:10,background:f.is_you?C.puBg:C.card,borderRadius:14,padding:"12px 14px",marginBottom:7}},
+      return h("div",{key:f.id,style:{display:"flex",alignItems:"center",gap:10,background:f.is_you?C.puBg:"#fff",borderRadius:14,padding:"12px 14px",marginBottom:7}},
         h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:f.is_you?C.pu:C.ink3,width:20,textAlign:"center",flexShrink:0}},f.rank),
         h("div",{style:{width:36,height:36,borderRadius:11,background:f.is_you?C.pu:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:14,fontWeight:800,color:"#fff",flexShrink:0}},f.name[0]),
         h("div",{style:{flex:1}},
@@ -1033,41 +955,32 @@ function LeaderboardSection({data}){
   );
 }
 
-/* ── ACCOUNTS SCREEN ── */
+/* ── ACCOUNTS screen ── */
 function AccountsScreen({data,onBack}){
   const{txs}=data;
   const[showAdd,setShowAdd]=useState(false);
   const[newName,setNewName]=useState("");
   const[newBal,setNewBal]=useState("");
 
-  const[customAccs,setCustomAccs]=useState(()=>{
-    try{return JSON.parse(localStorage.getItem("finly_accounts")||"[]");}catch{return [];}
-  });
-  const[defAcc,setDefAcc]=useState(()=>localStorage.getItem("finly_default_account")||"Карта");
-
+  // Compute per-account balance from real transactions
   const accMap={};
   txs.forEach(t=>{
     const acc=t.account||"Карта";
     accMap[acc]=(accMap[acc]||0)+(t.type==="income"?t.amount:-t.amount);
   });
 
-  const allNames=new Set(["Карта",...Object.keys(accMap),...customAccs.map(a=>a.name)]);
+  // Custom accounts with initial balances (persisted in localStorage)
+  const[customAccs,setCustomAccs]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem("finly_accounts")||"[]");}catch{return [];}
+  });
+
+  const allNames=new Set([...Object.keys(accMap),...customAccs.map(a=>a.name)]);
   const accList=[...allNames].map(name=>{
     const custom=customAccs.find(a=>a.name===name);
     return{name,icon:custom?.icon||"💳",balance:(custom?.initial||0)+(accMap[name]||0)};
   });
   const total=accList.reduce((s,a)=>s+a.balance,0);
 
-  function setDefault(name){
-    setDefAcc(name);
-    localStorage.setItem("finly_default_account",name);
-  }
-  function deleteAcc(name){
-    const upd=customAccs.filter(a=>a.name!==name);
-    setCustomAccs(upd);
-    localStorage.setItem("finly_accounts",JSON.stringify(upd));
-    if(defAcc===name)setDefault("Карта");
-  }
   function addAccount(){
     if(!newName.trim())return;
     const upd=[...customAccs,{name:newName.trim(),icon:"💳",initial:parseInt(newBal)||0}];
@@ -1089,19 +1002,16 @@ function AccountsScreen({data,onBack}){
           fmt(Math.abs(total))," ",h("span",{style:{fontSize:16,color:"rgba(255,255,255,.4)"}},"сум")),
         h("div",{style:{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:16}},"Все счета вместе"),
         h("div",{style:{height:1,background:"rgba(255,255,255,.08)",marginBottom:16}}),
-        h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.3)",letterSpacing:2,textTransform:"uppercase",marginBottom:8}},"СЧЁТ ПО УМОЛЧАНИЮ"),
-        h("div",{style:{fontFamily:F,fontSize:15,fontWeight:700,color:"#fff"}},defAcc)
+        accList.length===0
+          ?h("div",{style:{fontSize:12,color:"rgba(255,255,255,.3)",textAlign:"center",padding:"8px 0"}},"Счета появятся после первой записи")
+          :h("div",{style:{display:"flex",flexWrap:"wrap",gap:"12px 24px"}},
+            accList.map(a=>h("div",{key:a.name},
+              h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},a.name.toUpperCase()),
+              h("div",{style:{fontFamily:F,fontSize:20,fontWeight:700,color:a.balance>=0?"#fff":C.rd}},fmt(a.balance))
+            ))
+          )
       ),
-      ...accList.map(a=>h("div",{key:a.name,className:"card",style:{marginBottom:8,display:"flex",alignItems:"center",gap:12}},
-        h("div",{style:{width:40,height:40,borderRadius:12,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}},a.icon),
-        h("div",{style:{flex:1}},
-          h("div",{style:{fontFamily:F,fontSize:14,fontWeight:700,color:C.ink}},a.name),
-          h("div",{style:{fontSize:12,color:C.ink3,marginTop:2}},fmt(a.balance)+" сум")
-        ),
-        h("div",{onClick:()=>setDefault(a.name),style:{fontSize:18,cursor:"pointer",color:defAcc===a.name?C.am:"#D1D5DB",flexShrink:0,marginRight:4}},"★"),
-        a.name!=="Карта"&&h("div",{onClick:()=>deleteAcc(a.name),style:{fontSize:16,cursor:"pointer",color:C.ink3,flexShrink:0}},"×")
-      )),
-      h("div",{className:"btn btn-gray",style:{width:"100%",marginTop:4},onClick:()=>setShowAdd(true)},"+ Добавить счёт"),
+      h("div",{className:"btn btn-gray",style:{width:"100%"},onClick:()=>setShowAdd(true)},"+ Добавить счёт"),
       h("div",{style:{height:20}})
     ),
     showAdd&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowAdd(false)}},
@@ -1124,12 +1034,11 @@ function AccountsScreen({data,onBack}){
   );
 }
 
-/* ── BUDGETS SCREEN ── */
+/* ── BUDGETS screen ── */
 function BudgetsScreen({data,setData,onBack}){
   const[showAdd,setShowAdd]=useState(false);
   const[editB,setEditB]=useState(null);
   const budgets=data.budgets||[];
-  const expCats=data.exp_cats||EXP_CATS;
   const curMon=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"][new Date().getMonth()];
 
   async function saveBudget(b){
@@ -1141,14 +1050,7 @@ function BudgetsScreen({data,setData,onBack}){
         const res=await API.addBudget({name:b.name,icon:b.icon,limit_amt:b.limit,color:b.color});
         setData(d=>({...d,budgets:[...d.budgets,res]}));
       }
-    }catch(e){
-      console.error(e);
-      showToast({icon:"⚠️",title:"Не удалось сохранить бюджет",sub:"Проверьте соединение"});
-      if(!b.id){
-        const nb={...b,id:Date.now()};
-        setData(d=>({...d,budgets:[...d.budgets,nb]}));
-      }
-    }
+    }catch(e){console.error(e);}
     setShowAdd(false);setEditB(null);
   }
   async function deleteBudget(id){
@@ -1194,108 +1096,100 @@ function BudgetsScreen({data,setData,onBack}){
       h("div",{style:{height:20}})
     ),
     showAdd&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowAdd(false)}},
-      h(BudgetModal,{budget:null,expCats,onClose:()=>setShowAdd(false),onSave:saveBudget})
+      h(BudgetModal,{budget:null,onClose:()=>setShowAdd(false),onSave:saveBudget})
     ),
     editB&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setEditB(null)}},
-      h(BudgetModal,{budget:editB,expCats,onClose:()=>setEditB(null),onSave:saveBudget,onDelete:(id)=>{deleteBudget(id);setEditB(null);}})
+      h(BudgetModal,{budget:editB,onClose:()=>setEditB(null),onSave:saveBudget,onDelete:deleteBudget})
     )
   );
 }
 
-function BudgetModal({budget,expCats,onClose,onSave,onDelete}){
-  const cats=expCats||EXP_CATS;
-  const[selCat,setSelCat]=useState(budget?{icon:budget.icon,name:budget.name}:null);
+function BudgetModal({budget,onClose,onSave,onDelete}){
+  const[name,setName]=useState(budget?.name||"");
+  const[icon,setIcon]=useState(budget?.icon||"📦");
   const[limit,setLimit]=useState(budget?String(budget.limit):"");
+  const icons=["🛒","🏠","🚌","🍕","💊","🎬","👕","📚","💡","📱","🎮","✈️"];
   return h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"85%"}},
     h("div",{className:"mhandle"}),
     h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}},
       h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},budget?"Редактировать бюджет":"Новый бюджет"),
       h("div",{onClick:onClose,style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
     ),
-    h("label",{className:"flabel"},"КАТЕГОРИЯ РАСХОДОВ"),
-    h("div",{className:"catgrid",style:{gridTemplateColumns:"repeat(3,1fr)",marginBottom:16}},
-      cats.map(c=>h("div",{key:c.name,className:"catbtn"+(selCat?.name===c.name?" sel-e":""),onClick:()=>setSelCat(c)},
-        h("div",{className:"catbtn-icon"},c.icon),
-        h("div",{className:"catbtn-name"},c.name)
-      ))
+    h("label",{className:"flabel"},"ИКОНКА"),
+    h("div",{style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:16}},
+      icons.map(ic=>h("div",{key:ic,onClick:()=>setIcon(ic),style:{width:44,height:44,borderRadius:14,background:icon===ic?C.ink:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,cursor:"pointer",transition:"all .12s"}},ic))
     ),
+    h("label",{className:"flabel"},"НАЗВАНИЕ"),
+    h("input",{className:"finput sm",style:{marginBottom:14},placeholder:"Продукты",value:name,onChange:e=>setName(e.target.value)}),
     h("label",{className:"flabel"},"ЛИМИТ (СУМ)"),
     h("input",{className:"finput",style:{marginBottom:20},inputMode:"numeric",placeholder:"200 000",value:limit,onChange:e=>setLimit(e.target.value)}),
     h("div",{style:{display:"flex",gap:10}},
       budget&&h("div",{className:"btn btn-red-out",style:{flex:1},onClick:()=>{onDelete&&onDelete(budget.id)}},"Удалить"),
       h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>{
-        if(!selCat||!limit)return;
-        onSave({id:budget?.id,name:selCat.name,icon:selCat.icon,limit:parseInt(limit)||0,spent:budget?.spent||0,color:C.gr});
+        if(!name||!limit)return;
+        onSave({id:budget?.id,name,icon,limit:parseInt(limit)||0,spent:budget?.spent||0,color:C.gr});
       }},"Сохранить")
     )
   );
 }
 
 /* ── CATEGORIES MODAL ── */
-function CategoriesModal({data,setData,onClose}){
-  const[tabType,setTabType]=useState("expense");
+function CategoriesModal({onClose}){
   const[showAdd,setShowAdd]=useState(false);
+  const[cats,setCats]=useState([...EXP_CATS.slice(0,5)]);
+  const[catType,setCatType]=useState("expense");
   const[catName,setCatName]=useState("");
   const[catIcon,setCatIcon]=useState("📦");
-  const[saving,setSaving]=useState(false);
-  const allIcons=["🛒","🏠","🚗","☕","🍕","💊","🎮","✈️","👕","📚","💻","📱","🎬","🎵","🏋️","🌿","🐕","💡","🔧","🏥","🎓","🎁","💼","📈","🛍️","🍜","🚲","⚽","🎸","🏖️","💈","📦","🤷","🎭","💇"];
-  const cats=tabType==="expense"?(data.exp_cats||EXP_CATS):(data.inc_cats||INC_CATS);
-
-  async function addCat(){
-    if(!catName.trim()||saving)return;
-    setSaving(true);
-    const body={type:tabType,icon:catIcon,name:catName.trim()};
-    try{
-      const res=await API.addCategory(body);
-      setData(d=>{const key=tabType==="expense"?"exp_cats":"inc_cats";return{...d,[key]:[...(d[key]||[]),{icon:res.icon,name:res.name,id:res.id}]};});
-    }catch(e){
-      console.error(e);
-      showToast({icon:"⚠️",title:"Не удалось сохранить категорию",sub:"Проверьте соединение"});
-      setData(d=>{const key=tabType==="expense"?"exp_cats":"inc_cats";return{...d,[key]:[...(d[key]||[]),{icon:catIcon,name:catName.trim(),id:Date.now()}]};});
-    }finally{setSaving(false);}
-    setCatName("");setCatIcon("📦");setShowAdd(false);
-  }
-
-  async function delCat(cat,idx){
-    if(cat.id){try{await API.delCategory(cat.id);}catch(e){console.error(e);}}
-    setData(d=>{const key=tabType==="expense"?"exp_cats":"inc_cats";return{...d,[key]:(d[key]||[]).filter((_,i)=>i!==idx)};});
-  }
-
-  return h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"90%"}},
+  const colors=["#DC2626","#D97706","#EAB308","#16A34A","#2563EB","#7C3AED","#EC4899","#6B7280"];
+  const[selColor,setSelColor]=useState(colors[0]);
+  if(showAdd)return h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"90%"}},
+    h("div",{className:"mhandle"}),
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+      h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Новая категория"),
+      h("div",{onClick:()=>setShowAdd(false),style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
+    ),
+    h("label",{className:"flabel"},"ТИП"),
+    h("div",{className:"typerow",style:{marginBottom:16}},
+      ["expense","income"].map(t=>h("div",{key:t,className:"typebtn "+(catType===t?(t==="expense"?"exp-on":"inc-on"):""),onClick:()=>setCatType(t)},t==="expense"?"Расход":"Приход"))
+    ),
+    h("label",{className:"flabel"},"НАЗВАНИЕ КАТЕГОРИИ"),
+    h("input",{className:"finput sm",style:{marginBottom:14},placeholder:"Коммунальные услуги",value:catName,onChange:e=>setCatName(e.target.value)}),
+    h("label",{className:"flabel"},"ЦВЕТ"),
+    h("div",{style:{display:"flex",gap:8,marginBottom:14}},
+      colors.map(c=>h("div",{key:c,onClick:()=>setSelColor(c),style:{width:32,height:32,borderRadius:"50%",background:c,cursor:"pointer",boxShadow:selColor===c?`0 0 0 3px white, 0 0 0 5px ${c}`:"none",transition:"all .12s"}}))
+    ),
+    h("label",{className:"flabel"},"ЗНАЧОК (ОПЦИОНАЛЬНО)"),
+    h("div",{style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}},
+      ["💡","🚗","🛒","📱","🎮","✈️","🔧","🏥","🎓","🏋️"].map(ic=>h("div",{key:ic,onClick:()=>setCatIcon(ic),style:{width:42,height:42,borderRadius:12,background:catIcon===ic?C.bg:C.bg,border:`1.5px solid ${catIcon===ic?C.ink:C.bdr}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer"}},ic))
+    ),
+    h("div",{style:{display:"flex",gap:10}},
+      h("div",{className:"btn btn-gray",style:{flex:1},onClick:()=>setShowAdd(false)},"Отмена"),
+      h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>{
+        if(catName)setCats(p=>[...p,{icon:catIcon,name:catName}]);
+        setShowAdd(false);setCatName("");
+      }},"Добавить")
+    )
+  );
+  return h("div",{className:"msheet"},
     h("div",{className:"mhandle"}),
     h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
       h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Категории"),
       h("div",{onClick:onClose,style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
     ),
-    h("div",{className:"typerow",style:{marginBottom:14}},
-      ["expense","income"].map(t=>h("div",{key:t,className:"typebtn "+(tabType===t?(t==="expense"?"exp-on":"inc-on"):""),onClick:()=>setTabType(t)},t==="expense"?"Расходы":"Доходы"))
-    ),
-    h("div",{style:{maxHeight:220,overflowY:"auto",marginBottom:12}},
+    h("div",{style:{maxHeight:280,overflowY:"auto"}},
       cats.map((c,i)=>h("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"11px 0",borderBottom:`1px solid ${C.bdr}`}},
+        h("div",{style:{fontSize:22,width:36}}),
         h("div",{style:{fontSize:22,width:36,textAlign:"center"}},c.icon),
         h("div",{style:{flex:1,fontSize:14,fontWeight:600,color:C.ink}},c.name),
-        h("div",{onClick:()=>delCat(c,i),style:{fontSize:16,color:C.ink3,cursor:"pointer",padding:"4px 8px"}},"✕")
+        h("div",{onClick:()=>setCats(p=>p.filter((_,j)=>j!==i)),style:{fontSize:16,color:C.ink3,cursor:"pointer",padding:"4px 8px"}},"✕")
       ))
     ),
-    showAdd
-      ? h("div",{style:{background:C.bg,borderRadius:16,padding:14,marginBottom:4}},
-          h("label",{className:"flabel"},"НАЗВАНИЕ"),
-          h("input",{className:"finput sm",style:{marginBottom:12},placeholder:"Название категории",value:catName,onChange:e=>setCatName(e.target.value)}),
-          h("label",{className:"flabel"},"ЗНАЧОК"),
-          h("div",{style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}},
-            allIcons.map(ic=>h("div",{key:ic,onClick:()=>setCatIcon(ic),style:{width:40,height:40,borderRadius:11,background:catIcon===ic?C.ink:C.bdr,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer",transition:"all .12s"}},ic))
-          ),
-          h("div",{style:{display:"flex",gap:8}},
-            h("div",{className:"btn btn-gray",style:{flex:1,padding:"12px"},onClick:()=>{setShowAdd(false);setCatName("");}},"Отмена"),
-            h("div",{className:"btn btn-ink",style:{flex:2,padding:"12px"},onClick:addCat},saving?"...":"Добавить")
-          )
-        )
-      : h("div",{className:"btn btn-ink",style:{width:"100%",marginTop:4},onClick:()=>setShowAdd(true)},"+ Добавить категорию")
+    h("div",{className:"btn btn-ink",style:{width:"100%",marginTop:16},onClick:()=>setShowAdd(true)},"+ Добавить категорию")
   );
 }
 
 /* ── PROFILE ── */
-function ProfileScreen({data,setData,onPatchUser,darkMode,setDarkMode}){
+function ProfileScreen({data,setData,onPatchUser}){
   const[section,setSection]=useState("main");
   const[notifs,setNotifs]=useState(data.notifs!==false);
   const[weekly,setWeekly]=useState(data.weekly||false);
@@ -1360,20 +1254,11 @@ function ProfileScreen({data,setData,onPatchUser,darkMode,setDarkMode}){
         h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
         h(SettRow,{icon:"🎯",bg:C.amBg,label:"Бюджеты",sub:(data.budgets||[]).length+" активных лимита",onClick:()=>setSection("budgets")}),
         h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
-        h(SettRow,{icon:"📂",bg:C.bg,label:"Категории",sub:(data.exp_cats||EXP_CATS).length+" расходов · "+(data.inc_cats||INC_CATS).length+" доходов",onClick:()=>setShowCats(true)}),
+        h(SettRow,{icon:"💱",bg:C.bg,label:"Основная валюта",sub:"UZS — Узбекский сум",tag:"UZS"}),
         h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
-        h(SettRow,{icon:"💱",bg:C.bg,label:"Основная валюта",sub:"UZS — Узбекский сум",tag:"UZS"})
+        h(SettRow,{icon:"📂",bg:C.bg,label:"Категории",sub:(data.exp_cats||[]).length+" расходов · "+(data.inc_cats||[]).length+" дохода",onClick:()=>setShowCats(true)})
       ),
       h("div",{className:"scard",style:{marginBottom:10}},
-        h("div",{className:"srow"},
-          h("div",{className:"s-ic",style:{background:"#1C1C1E"}},"🌙"),
-          h("div",{style:{flex:1}},
-            h("div",{style:{fontSize:14,fontWeight:600,color:C.ink}},"Тёмная тема"),
-            h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Переключить тёмный режим")
-          ),
-          h(Toggle,{on:darkMode,cb:()=>setDarkMode&&setDarkMode(v=>!v)})
-        ),
-        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
         h("div",{className:"srow"},
           h("div",{className:"s-ic",style:{background:C.blBg}},"🔔"),
           h("div",{style:{flex:1}},
@@ -1407,7 +1292,7 @@ function ProfileScreen({data,setData,onPatchUser,darkMode,setDarkMode}){
             h("div",{onClick:()=>setShowEditProfile(false),style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
           ),
           h("div",{style:{display:"flex",alignItems:"center",gap:14,marginBottom:20,padding:"14px",background:C.bg,borderRadius:16}},
-            h("div",{style:{width:52,height:52,borderRadius:17,background:"#111318",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff"}},"А"),
+            h("div",{style:{width:52,height:52,borderRadius:17,background:C.ink,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff"}},"А"),
             h("div",{style:{flex:1}},
               h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},"Аватар"),
               h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Изменить начальную букву имени")
@@ -1430,7 +1315,7 @@ function ProfileScreen({data,setData,onPatchUser,darkMode,setDarkMode}){
       ),
       // Categories modal
       showCats&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowCats(false)}},
-        h(CategoriesModal,{data,setData,onClose:()=>setShowCats(false)})
+        h(CategoriesModal,{onClose:()=>setShowCats(false)})
       )
     )
   );
@@ -1452,19 +1337,6 @@ function App(){
   const[successInfo,setSuccessInfo]=useState(null);
   const[detailTx,setDetailTx]=useState(null);
   const[editTx,setEditTx]=useState(null);
-  const[darkMode,setDarkMode]=useState(()=>{try{return localStorage.getItem("finly_dark")==="1";}catch{return false;}});
-
-  // Wire global toast
-  useEffect(()=>{_setToast=setToast;return()=>{_setToast=null;};},[setToast]);
-
-  // Apply color tokens and dark class on every render
-  Object.assign(C,darkMode?C_DARK:C_LIGHT);
-  useEffect(()=>{
-    try{localStorage.setItem("finly_dark",darkMode?"1":"0");}catch{}
-    const el=document.getElementById("app");
-    if(el){el.classList.toggle("dark",darkMode);el.style.background=darkMode?"#111318":"#F4F5F7";}
-    document.body.style.background=darkMode?"#111318":"#F4F5F7";
-  },[darkMode]);
 
   // ── Bootstrap: load all data on open ──
   useEffect(()=>{
@@ -1558,14 +1430,14 @@ function App(){
     h(SuccessScreen,{tx:successInfo.tx,xp:successInfo.xp,totalXp:successInfo.totalXp,onDone:()=>setSuccessInfo(null),setTab:setTabSafe})
   );
 
-  return h("div",{id:"app",className:darkMode?"dark":""},
+  return h("div",{id:"app"},
     toast&&h(Toast,{toast}),
     h("div",{style:{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}},
       tab==="home"&&h(HomeScreen,{data,setTab:setTabSafe,onTxTap:(tx)=>setDetailTx(tx)}),
       tab==="add"&&h(AddScreen,{data,setData,onSaved:handleSaved,setTab:setTabSafe}),
       tab==="analytics"&&h(AnalyticsScreen,{data,onTxTap:(tx)=>setDetailTx(tx)}),
       tab==="rewards"&&h(RewardsScreen,{data,setData}),
-      tab==="profile"&&h(ProfileScreen,{data,setData,onPatchUser:handlePatchUser,darkMode,setDarkMode})
+      tab==="profile"&&h(ProfileScreen,{data,setData,onPatchUser:handlePatchUser})
     ),
     h(NavBar,{tab,setTab:setTabSafe,hasDraft}),
     detailTx&&!editTx&&h(TxDetailModal,{tx:detailTx,onClose:()=>setDetailTx(null),onDelete:handleDeleteTx,onEdit:(tx)=>{setEditTx(tx);setDetailTx(null);}}),
