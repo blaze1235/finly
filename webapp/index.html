@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;height:100dvh;background:#F4F5F7;font-family:'DM Sans',sans-serif;overflow:hidden;}
+::-webkit-scrollbar{display:none;}*{scrollbar-width:none;}
+#app{width:100%;height:100%;height:100dvh;background:#F4F5F7;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.anim-up{animation:slideUp .22s ease forwards;}
+.anim-fade{animation:fadeIn .18s ease forwards;}
+.screen{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* NAV */
+.navbar{background:#fff;padding:6px 4px 18px;display:flex;gap:2px;flex-shrink:0;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:12px;cursor:pointer;transition:all .12s;position:relative;}
+.ni.act{background:#F4F5F7;}
+.ni-icon{font-size:20px;line-height:1;}
+.ni-lbl{font-family:'Syne',sans-serif;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#B0B7C3;}
+.ni.act .ni-lbl{color:#111318;}
+.ni-dot{position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:#DC2626;border:2px solid #F4F5F7;}
+/* STATUS BAR */
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 4px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;flex-shrink:0;}
+.sb.light{color:#111318;background:#F4F5F7;}
+.sb.dark{color:rgba(255,255,255,.7);background:#1C1C1E;}
+/* PAGE HEADER */
+.ph{display:flex;align-items:center;gap:12px;padding:8px 20px 14px;background:#F4F5F7;flex-shrink:0;}
+.back{font-size:24px;cursor:pointer;color:#111318;line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#F4F5F7;}
+.ph-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#111318;flex:1;}
+.ph-action{font-size:12px;font-weight:700;color:#6B7280;cursor:pointer;padding:8px 12px;border-radius:10px;background:#F4F5F7;}
+/* CARDS */
+.card{background:#fff;border-radius:20px;}
+/* BUTTONS */
+.btn{border-radius:16px;padding:16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-align:center;cursor:pointer;transition:all .12s;border:none;outline:none;-webkit-tap-highlight-color:transparent;}
+.btn:active{transform:scale(.97);}
+.btn-ink{background:#111318;color:#fff;}
+.btn-ink:active{background:#2a2a30;}
+.btn-red{background:#DC2626;color:#fff;}
+.btn-gray{background:#F0F0F2;color:#111318;}
+.btn-red-out{background:#FEF2F2;color:#DC2626;}
+/* TX CARD */
+.txc{background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .1s;}
+.txc:active{transform:scale(.98);background:#FAFAFA;}
+.tx-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+/* FORM */
+.flabel{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:#B0B7C3;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;display:block;}
+.finput{width:100%;background:#F4F5F7;border:none;border-radius:14px;padding:14px 16px;font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#111318;outline:none;}
+
+.finput.sm{font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;}
+textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;height:70px;font-weight:400;}
+/* TOGGLE */
+.tog{width:44px;height:26px;border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.tog.on{background:#111318;}.tog.off{background:#D1D5DB;}
+.tog-k{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;transition:left .15s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tog.on .tog-k{left:21px;}.tog.off .tog-k{left:3px;}
+/* CAT GRID */
+.catgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.catbtn{padding:14px 6px;border-radius:14px;background:#F4F5F7;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .1s;}
+.catbtn:active{transform:scale(.96);}
+.catbtn.sel-e{background:#FEF2F2;}
+.catbtn.sel-i{background:#F0FDF4;}
+.catbtn-icon{font-size:24px;}
+.catbtn-name{font-size:11px;font-weight:600;color:#111318;text-align:center;line-height:1.2;}
+.catbtn.sel-e .catbtn-name{color:#DC2626;}
+.catbtn.sel-i .catbtn-name{color:#16A34A;}
+/* CURRENCY */
+.currrow{display:flex;background:#F0F0F2;border-radius:12px;padding:3px;flex-shrink:0;}
+.currp{padding:10px 14px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;color:#6B7280;}
+.currp.act{background:#111318;color:#fff;}
+/* CHIPS */
+.chip-green{background:#F0FDF4;color:#16A34A;}.chip-red{background:#FEF2F2;color:#DC2626;}.chip-amber{background:#FFFBEB;color:#D97706;}.chip{font-size:10px;font-weight:700;letter-spacing:.8px;padding:4px 10px;border-radius:8px;display:inline-block;text-transform:uppercase;}
+.chip-g{background:#F0FDF4;color:#16A34A;}
+.chip-r{background:#FEF2F2;color:#DC2626;}
+.chip-a{background:#FFFBEB;color:#D97706;}
+.chip-b{background:#EFF6FF;color:#2563EB;}
+.chip-p{background:#FAF5FF;color:#7C3AED;}
+/* PROG BAR */
+.ptrack{height:6px;background:#ECEEF2;border-radius:3px;overflow:hidden;}
+.pfill{height:100%;border-radius:3px;transition:width .4s ease;}
+.pfill.g{background:#16A34A;}.pfill.a{background:#D97706;}.pfill.r{background:#DC2626;}
+.pfill.xp{background:linear-gradient(90deg,#D97706,#F59E0B);}
+/* SETTINGS */
+.scard{background:#fff;border-radius:20px;overflow:hidden;}
+.srow{display:flex;align-items:center;padding:15px 16px;gap:13px;cursor:pointer;transition:background .1s;position:relative;}
+.srow:active{background:#F4F5F7;}
+.srow+.srow::before{content:'';position:absolute;top:0;left:48px;right:0;height:1px;background:#ECEEF2;}
+.s-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+/* MODAL OVERLAY */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:50;display:flex;align-items:flex-end;animation:fadeIn .15s ease;}
+.msheet{background:#fff;border-radius:28px 28px 0 0;width:100%;padding:16px 20px 36px;animation:slideUp .2s ease;max-height:90%;}
+.mhandle{width:40px;height:4px;border-radius:2px;background:#ECEEF2;margin:0 auto 18px;}
+/* TOAST */
+.toast{position:absolute;top:16px;left:12px;right:12px;z-index:100;background:#1C1C1E;border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideDown .25s ease;}
+/* STREAK BANNER */
+.streak-ban{background:linear-gradient(135deg,#1C1C1E,#28282C);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.streak-ban::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.12) 0%,transparent 70%);}
+.sdot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+.sdot.dn{background:#F59E0B;color:#1C1C1E;}
+.sdot.td{background:rgba(245,158,11,.15);border:1.5px solid #F59E0B;color:#F59E0B;}
+.sdot.ms{background:#222;color:#444;}
+/* TYPE ROW */
+.typerow{display:flex;gap:5px;margin-bottom:16px;background:#F4F5F7;border-radius:14px;padding:4px;}
+.typebtn{flex:1;padding:12px 6px;border-radius:11px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:#6B7280;}
+.typebtn.exp-on{background:#DC2626;color:#fff;}
+.typebtn.inc-on{background:#16A34A;color:#fff;}
+/* FILTER */
+.fbar{display:flex;gap:6px;overflow-x:auto;flex-shrink:0;padding:0 16px 10px;}
+.fpill{padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;background:#ECEEF2;color:#6B7280;flex-shrink:0;cursor:pointer;transition:all .12s;}
+.fpill.act{background:#111318;color:#fff;border-color:#111318;}
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;background:#fff;border-radius:18px;margin-bottom:12px;overflow:hidden;}
+.kpi-cell{text-align:center;padding:18px 4px;}
+.kpi-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
+.kpi-lab{font-size:9px;font-weight:700;color:#B0B7C3;letter-spacing:.5px;text-transform:uppercase;margin-top:3px;}
+/* BUDGET */
+.budg-item{background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .1s;}
+.budg-item:active{transform:scale(.98);}
+/* SEARCH */
+.sinput{width:100%;border:none;border-radius:14px;padding:12px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:#111318;background:#F4F5F7;outline:none;}
+
+/* SUMMARY CARDS */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.sum-card{border-radius:18px;padding:14px 16px;border:1px solid;}
+/* PROFILE HERO */
+.prof-hero{background:#1C1C1E;padding:16px 20px 0;position:relative;overflow:hidden;flex-shrink:0;}
+.prof-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.08) 0%,transparent 70%);}
+.ph-stat-row{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);padding:10px 0;margin-top:12px;}
+/* SUCCESS */
+.success-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;background:#F4F5F7;}
+/* LOGO */
+.logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#111318;letter-spacing:-1px;}
+.logo span{color:#111318;}
+/* WALLET CARD */
+.wallet{background:#111318;border-radius:22px;padding:22px 20px;margin-bottom:10px;position:relative;overflow:hidden;}
+.wallet::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.03);}
+/* REWARDS HERO */
+.rw-hero{background:linear-gradient(160deg,#1a0a3e,#2d1069,#1C1C1E);padding:20px 20px 0;position:relative;overflow:hidden;flex-shrink:0;}
+.rw-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);}
+</style>
+  <!-- Set your Railway API URL here, or inject via build -->
+  <script>window.FINLY_API_URL = "https://finly-tracker.up.railway.app";</script>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script>
+const{useState,useEffect,useRef,useCallback}=React;
+const h=React.createElement;
+
+/* ── TELEGRAM USER (global so all components can access) ── */
+const TGUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
+if (window.Telegram?.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
+const TG_NAME = TGUser?.first_name || "Абдулазиз";
+const TG_INITIAL = (TGUser?.first_name || "А")[0].toUpperCase();
+const TG_USERNAME = TGUser?.username ? "@"+TGUser.username : "@alisherjon";
+
+/* ── TOKENS ── */
+const C={bg:"#F4F5F7",sur:"#FFFFFF",ink:"#111318",ink2:"#6B7280",ink3:"#B0B7C3",bdr:"#ECEEF2",
+  gr:"#16A34A",grBg:"#F0FDF4",grMd:"#DCFCE7",rd:"#DC2626",rdBg:"#FEF2F2",rdMd:"#FEE2E2",
+  am:"#D97706",amBg:"#FFFBEB",bl:"#2563EB",blBg:"#EFF6FF",pu:"#7C3AED",puBg:"#FAF5FF",
+  dk:"#1C1C1E",am2:"#F59E0B"};
+const F="'Syne',sans-serif";
+const fmt=n=>Math.round(n).toLocaleString("ru-RU");
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
+const dispDate=s=>{const t=today();if(s===t)return"Сегодня";const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");if(s===ys)return"Вчера";return s.slice(8)+"."+s.slice(5,7);};
+
+const EXP_CATS=[
+  {icon:"🛒",name:"Продукты"},{icon:"🏠",name:"Жильё"},{icon:"🚌",name:"Транспорт"},
+  {icon:"🍕",name:"Кафе"},{icon:"💊",name:"Здоровье"},{icon:"🎬",name:"Развлечения"},
+  {icon:"👕",name:"Одежда"},{icon:"📚",name:"Образование"},{icon:"🤷",name:"Забыл"},{icon:"•••",name:"Прочее"},
+];
+const INC_CATS=[
+  {icon:"💼",name:"Зарплата"},{icon:"💹",name:"Подработка"},{icon:"🏦",name:"Инвестиции"},{icon:"🎁",name:"Подарок"},
+];
+
+const INIT_TXS=[];
+
+const INIT_DRAFTS=[];
+
+const INIT_BUDGETS=[];
+
+const INIT_ACHS=[];
+
+const XP_LOG=[
+  {icon:"🔥",label:"Серия сохранена",sub:"14:32 · Streak ×14",pts:20,dateStr:"2025-05-13"},
+  {icon:"➕",label:"Добавлена операция",sub:"14:32 · Продукты",pts:10,dateStr:"2025-05-13"},
+  {icon:"📊",label:"Открыта аналитика",sub:"13:10",pts:5,dateStr:"2025-05-13"},
+  {icon:"🔥",label:"Серия сохранена",sub:"10:00 · Streak ×13",pts:20,dateStr:"2025-05-12"},
+  {icon:"➕",label:"Добавлена операция",sub:"09:15 · Зарплата",pts:10,dateStr:"2025-05-12"},
+];
+
+/* ── SHARED COMPONENTS ── */
+
+function Logo(){
+  return h("div",{className:"logo"},"Finly.");
+}
+function Toggle({on,cb}){
+  return h("div",{className:"tog "+(on?"on":"off"),onClick:cb},h("div",{className:"tog-k"}));
+}
+function Streak({streak}){
+  const days=Array.from({length:7},(_,i)=>{
+    const pct=(streak%7)||7;
+    if(i<pct-1)return"dn";
+    if(i===pct-1)return"td";
+    return"ms";
+  });
+  return h("div",{className:"streak-ban"},
+    h("div",{style:{fontSize:32,flexShrink:0}},"🔥"),
+    h("div",{style:{flex:1}},
+      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:"#fff",lineHeight:1}},
+        h("span",{style:{color:C.am2}},streak)," дней подряд"),
+      h("div",{style:{fontSize:11,color:"#666",marginTop:2,fontWeight:600}},"Не упустите серию!"),
+      h("div",{style:{display:"flex",gap:5,marginTop:8}},
+        days.map((t,i)=>h("div",{key:i,className:"sdot "+t},t==="dn"?"✓":t==="td"?"·":"·")))
+    ),
+    h("div",{style:{background:"rgba(245,158,11,.12)",color:C.am2,fontFamily:F,fontSize:10,fontWeight:700,padding:"8px 12px",borderRadius:11,flexShrink:0,textAlign:"center",lineHeight:1.4,letterSpacing:1,textTransform:"uppercase"}},"+20\nXP")
+  );
+}
+function NavBar({tab,setTab,hasDraft}){
+  const items=[
+    {id:"home",icon:"⊞",label:"Главная"},
+    {id:"add",icon:"＋",label:"Запись"},
+    {id:"analytics",icon:"📊",label:"Отчёты"},
+    {id:"rewards",icon:"🏆",label:"Прогресс"},
+    {id:"profile",icon:"👤",label:"Профиль"},
+  ];
+  return h("nav",{className:"navbar"},
+    items.map(it=>h("div",{key:it.id,className:"ni"+(tab===it.id?" act":""),onClick:()=>setTab(it.id)},
+      h("div",{className:"ni-icon"},it.icon),
+      h("div",{className:"ni-lbl"},it.label),
+      it.id==="add"&&hasDraft?h("div",{className:"ni-dot"}):null
+    ))
+  );
+}
+function TxCard({tx,onTap}){
+  return h("div",{className:"txc",onClick:()=>onTap&&onTap(tx)},
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}},
+      h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{className:"tx-icon",style:{background:tx.type==="income"?C.grBg:C.rdBg}},tx.cat),
+        h("div",null,
+          h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.ink}},tx.catName),
+          tx.recurring?h("span",{style:{fontSize:10,fontWeight:700,color:C.bl,background:C.blBg,padding:"2px 7px",borderRadius:5}},"↻ повтор"):null
+        )
+      ),
+      h("div",{style:{fontFamily:F,fontSize:16,fontWeight:800,color:tx.type==="income"?C.gr:C.ink}},
+        (tx.type==="income"?"+":"−")+fmt(tx.amount))
+    ),
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+      h("div",{style:{fontSize:13,color:C.ink2,maxWidth:200,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},tx.note||tx.catName),
+      h("div",{style:{fontSize:10,fontWeight:600,color:C.ink3}},dispDate(tx.dateStr)+" · "+tx.time)
+    )
+  );
+}
+function SettRow({icon,bg,label,sub,tag,tagBg,tagColor,right,onClick}){
+  return h("div",{className:"srow",onClick:onClick||undefined},
+    h("div",{className:"s-ic",style:{background:bg||C.bg}},icon),
+    h("div",{style:{flex:1}},
+      h("div",{style:{fontSize:14,fontWeight:600,color:C.ink}},label),
+      sub?h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},sub):null
+    ),
+    right||h("div",{style:{display:"flex",alignItems:"center",gap:6}},
+      tag?h("div",{style:{background:tagBg||C.bg,color:tagColor||C.ink2,fontSize:11,fontWeight:700,padding:"4px 10px",borderRadius:8}},tag):null,
+      h("div",{style:{color:C.ink3,fontSize:18}},"›")
+    )
+  );
+}
+function Toast({toast}){
+  if(!toast)return null;
+  return h("div",{className:"toast"},
+    h("div",{style:{fontSize:28}},toast.icon),
+    h("div",{style:{flex:1}},
+      h("div",{style:{fontFamily:F,fontSize:14,fontWeight:700,color:"#fff"}},toast.title),
+      h("div",{style:{fontSize:11,color:"#555",marginTop:2}},toast.sub)
+    ),
+    toast.pts?h("div",{style:{textAlign:"right"}},
+      h("div",{style:{fontFamily:F,fontSize:16,fontWeight:700,color:C.am2}},toast.pts),
+      h("div",{style:{fontSize:10,color:"rgba(245,158,11,.5)"}},"XP")
+    ):null
+  );
+}
+
+/* ── TX DETAIL MODAL ── */
+function TxDetailModal({tx,onClose,onDelete,onEdit}){
+  const[showDel,setShowDel]=useState(false);
+  if(showDel)return h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowDel(false)}},
+    h("div",{className:"msheet",style:{padding:"24px 20px 36px"}},
+      h("div",{className:"mhandle"}),
+      h("div",{style:{textAlign:"center",marginBottom:20}},
+        h("div",{style:{fontSize:48,marginBottom:12}},"🗑️"),
+        h("div",{style:{fontFamily:F,fontSize:20,fontWeight:800,color:C.ink,marginBottom:6}},"Удалить запись?"),
+        h("div",{style:{fontSize:13,color:C.ink2,lineHeight:1.5}},(tx.type==="income"?"+":"−")+fmt(tx.amount)+" сум · "+tx.catName+" · "+tx.dateStr.slice(8)+"."+tx.dateStr.slice(5,7)+"."+tx.dateStr.slice(0,4)),
+        h("div",{style:{fontSize:13,color:C.rd,marginTop:4}},"Это действие нельзя отменить.")
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:8}},
+        h("div",{className:"btn btn-gray",style:{flex:1},onClick:()=>setShowDel(false)},"Отмена"),
+        h("div",{className:"btn btn-red",style:{flex:2},onClick:()=>{onDelete(tx.id);onClose();}},"Удалить")
+      )
+    )
+  );
+  return h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)onClose()}},
+    h("div",{className:"msheet"},
+      h("div",{className:"mhandle"}),
+      // Header
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16}},
+        h("div",null,
+          h("div",{style:{fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",color:tx.type==="income"?C.gr:C.rd,marginBottom:4}},
+            (tx.type==="income"?"▲ ДОХОД":"▼ РАСХОД")),
+          h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.ink,letterSpacing:.3}},tx.catName)
+        ),
+        h("div",{style:{display:"flex",gap:8}},
+          h("div",{onClick:()=>onEdit(tx),style:{width:38,height:38,borderRadius:11,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer"}},"✏️"),
+          h("div",{onClick:onClose,style:{width:38,height:38,borderRadius:11,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",color:C.ink3}},"✕")
+        )
+      ),
+      // Big amount
+      h("div",{style:{fontFamily:F,fontSize:36,fontWeight:800,color:tx.type==="income"?C.gr:C.ink,marginBottom:4}},
+        (tx.type==="income"?"+":"−")+fmt(tx.amount)+" сум"),
+      h("div",{style:{fontSize:12,color:C.ink3,marginBottom:20}},
+        tx.dateStr.slice(8)+"."+tx.dateStr.slice(5,7)+"."+tx.dateStr.slice(0,4)+" · "+tx.time+(tx.account?" · "+tx.account:"")),
+      // Detail rows
+      // Rewrite the detail rows properly
+      h("div",{style:{background:C.bg,borderRadius:16,overflow:"hidden",marginBottom:16}},
+        [["Примечание",tx.note||"—"],["Категория",tx.cat+" "+tx.catName],["Счёт",tx.account||"Карта"],["Повтор",tx.recurring?"Ежемесячно":"Нет"]].map(([l,v],i,arr)=>
+          h("div",{key:l,style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"13px 16px",borderBottom:i<arr.length-1?`1px solid ${C.bdr}`:"none"}},
+            h("div",{style:{fontSize:13,color:C.ink2}},l),
+            h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},v)
+          )
+        )
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:4}},
+        h("div",{className:"btn btn-red-out",style:{flex:1,fontSize:12},onClick:()=>setShowDel(true)},"Удалить"),
+        h("div",{className:"btn btn-ink",style:{flex:2,fontSize:12},onClick:()=>onEdit(tx)},"Редактировать")
+      )
+    )
+  );
+}
+
+/* ── TX EDIT MODAL ── */
+function TxEditModal({tx,onClose,onSave}){
+  const[type,setType]=useState(tx.type);
+  const[amount,setAmount]=useState(String(tx.amount));
+  const[selCat,setSelCat]=useState({icon:tx.cat,name:tx.catName});
+  const[note,setNote]=useState(tx.note||"");
+  const[dateStr,setDateStr]=useState(tx.dateStr);
+  const cats=type==="expense"?EXP_CATS:INC_CATS;
+  return h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)onClose()}},
+    h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"90%"}},
+      h("div",{className:"mhandle"}),
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+        h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Редактировать"),
+        h("div",{onClick:onClose,style:{fontSize:20,color:C.ink3,cursor:"pointer",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}},"✕")
+      ),
+      h("div",{className:"typerow"},
+        ["expense","income"].map(t=>h("div",{key:t,className:"typebtn "+(type===t?(t==="expense"?"exp-on":"inc-on"):""),onClick:()=>{setType(t);setSelCat(null);}},t==="expense"?"Расход":"Доход"))
+      ),
+      h("label",{className:"flabel"},"СУММА"),
+      h("input",{className:"finput",style:{marginBottom:14},inputMode:"numeric",value:amount,onChange:e=>setAmount(e.target.value)}),
+      h("label",{className:"flabel"},"КАТЕГОРИЯ"),
+      h("div",{className:"catgrid",style:{gridTemplateColumns:"repeat(3,1fr)"}},
+        cats.slice(0,6).map(c=>h("div",{key:c.name,className:"catbtn"+(selCat?.name===c.name?" sel-"+(type==="expense"?"e":"i"):""),onClick:()=>setSelCat(c)},
+          h("div",{className:"catbtn-icon"},c.icon),
+          h("div",{className:"catbtn-name"},c.name)
+        ))
+      ),
+      h("label",{className:"flabel"},"ДАТА"),
+      h("input",{type:"date",className:"finput sm",style:{marginBottom:14},value:dateStr,onChange:e=>setDateStr(e.target.value)}),
+      h("label",{className:"flabel"},"ПРИМЕЧАНИЕ"),
+      h("textarea",{className:"finput",style:{fontSize:14,height:70,fontFamily:"'DM Sans',sans-serif",fontWeight:400},value:note,onChange:e=>setNote(e.target.value)}),
+      h("div",{style:{display:"flex",gap:10,marginTop:8}},
+        h("div",{className:"btn btn-gray",style:{flex:1},onClick:onClose},"Отмена"),
+        h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>{
+          onSave({...tx,type,amount:parseInt(amount)||tx.amount,cat:selCat?.icon||tx.cat,catName:selCat?.name||tx.catName,note,dateStr});
+          onClose();
+        }},"Сохранить")
+      )
+    )
+  );
+}
+
+/* ── HOME ── */
+function HomeScreen({data,setTab,onTxTap}){
+  const{txs,streak}=data;
+  const income=txs.filter(t=>t.type==="income").reduce((a,b)=>a+b.amount,0);
+  const expense=txs.filter(t=>t.type==="expense").reduce((a,b)=>a+b.amount,0);
+  const balance=income-expense;
+  const d=new Date();
+  const days=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
+  const mons=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  const hr=d.getHours();
+  const greet=hr<12?"Доброе утро":hr<17?"Добрый день":"Добрый вечер";
+  return h("div",{className:"screen anim-fade"},
+    // header
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 20px 14px",background:C.bg}},
+      h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{style:{width:44,height:44,borderRadius:14,background:C.ink,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,flexShrink:0}},TG_INITIAL),
+        h("div",null,
+          h("div",{style:{fontSize:16,fontWeight:700,color:C.ink}},greet+", Абдулазиз"),
+          h("div",{style:{fontSize:11,color:C.ink3,marginTop:1}},days[d.getDay()]+", "+d.getDate()+" "+mons[d.getMonth()])
+        )
+      ),
+      h("div",{style:{textAlign:"right"}},
+        h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:balance>=0?C.gr:C.rd,lineHeight:1}},fmt(balance)),
+        h("div",{style:{fontSize:10,color:C.ink3,letterSpacing:1,textTransform:"uppercase",marginTop:2}},"баланс · сум")
+      )
+    ),
+    h("div",{className:"scroll",style:{padding:"4px 16px 0"}},
+      // income/expense summary
+      h("div",{className:"sum-grid"},
+        h("div",{className:"sum-card",style:{background:C.grBg}},
+          h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:C.gr,letterSpacing:1.5,textTransform:"uppercase",marginBottom:4}},"Доход · май"),
+          h("div",{style:{fontFamily:F,fontSize:20,fontWeight:800,color:C.gr}},fmt(income)),
+          h("div",{style:{fontSize:11,color:C.gr,marginTop:3}},"+8% к апрелю")
+        ),
+        h("div",{className:"sum-card",style:{background:C.rdBg}},
+          h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:C.rd,letterSpacing:1.5,textTransform:"uppercase",marginBottom:4}},"Расход · май"),
+          h("div",{style:{fontFamily:F,fontSize:20,fontWeight:800,color:C.rd}},fmt(expense)),
+          h("div",{style:{fontSize:11,color:C.rd,marginTop:3}},Math.round(expense/Math.max(income,1)*100)+"% от дохода")
+        )
+      ),
+      // streak
+      h(Streak,{streak}),
+      // insight
+      h("div",{style:{background:C.blBg,borderRadius:18,padding:"13px 15px",marginBottom:10,display:"flex",alignItems:"flex-start",gap:10}},
+        h("div",{style:{fontSize:20,flexShrink:0,marginTop:1}},"💡"),
+        h("div",null,
+          h("div",{style:{fontSize:13,fontWeight:700,color:"#1E40AF"}},"Продукты растут"),
+          h("div",{style:{fontSize:11,color:C.bl,marginTop:2}},"На этой неделе на 23% больше среднего.")
+        )
+      ),
+      // recent
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+        h("div",{style:{fontFamily:F,fontSize:16,fontWeight:800,color:C.ink}},"Последнее"),
+        h("div",{onClick:()=>setTab("analytics"),style:{fontSize:12,color:C.ink3,cursor:"pointer",fontWeight:600}},"Все →")
+      ),
+      ...txs.slice(0,3).map(tx=>h(TxCard,{key:tx.id,tx,onTap:onTxTap})),
+      h("div",{style:{height:16}})
+    ),
+    h("div",{style:{padding:"0 16px 10px"}},
+      h("div",{className:"btn btn-ink",style:{width:"100%",fontSize:14},onClick:()=>setTab("add")},
+        "+ НОВАЯ ЗАПИСЬ")
+    )
+  );
+}
+
+/* ── ADD SCREEN ── */
+function AddScreen({data,setData,onSaved,setTab}){
+  const[type,setType]=useState("expense");
+  const[amount,setAmount]=useState("");
+  const[currency,setCurrency]=useState("UZS");
+  const[usdRate,setUsdRate]=useState("12700");
+  const[selCat,setSelCat]=useState(null);
+  const[note,setNote]=useState("");
+  const[recurring,setRecurring]=useState(false);
+  const[draftMsg,setDraftMsg]=useState(false);
+  const[showDrafts,setShowDrafts]=useState(false);
+  const cats=type==="expense"?EXP_CATS:INC_CATS;
+  const canSave=amount.trim()&&selCat;
+
+  const[saving,setSaving]=useState(false);
+  async function save(){
+    if(!canSave||saving)return;
+    setSaving(true);
+    const raw=parseInt(amount.replace(/\D/g,""))||0;
+    const finalAmt=currency==="$"?raw*(parseInt(usdRate.replace(/\D/g,""))||12700):raw;
+    const body={type,cat_icon:selCat.icon,cat_name:selCat.name,
+      note:note||selCat.name,amount:finalAmt,date_str:today(),
+      time_str:nowTime(),currency,recurring,account:"Карта"};
+    try{
+      const res=await API.addTx(body);
+      setData(d=>({...d,txs:[res.tx,...d.txs],xp:res.total_xp,level:res.level,streak:res.streak}));
+      onSaved(res.tx, res.xp_earned, res.total_xp);
+    }catch(e){
+      console.error(e);
+      // Optimistic fallback so UI doesn't freeze
+      const tx={id:Date.now(),type,cat:selCat.icon,catName:selCat.name,note:note||selCat.name,amount:finalAmt,dateStr:today(),time:nowTime(),currency,recurring,account:"Карта"};
+      setData(d=>({...d,txs:[tx,...d.txs],xp:d.xp+15}));
+      onSaved(tx,15,data.xp+15);
+    } finally{ setSaving(false); }
+  }
+  async function draft(){
+    if(!amount.trim())return;
+    const raw=parseInt(amount.replace(/\D/g,""))||0;
+    const body={type,cat_icon:selCat?.icon||"❓",cat_name:selCat?.name||"Без категории",
+      note,amount:raw,date_str:today(),time_str:nowTime(),currency};
+    try{
+      const dr=await API.addDraft(body);
+      setData(d=>({...d,drafts:[dr,...d.drafts]}));
+    }catch(e){
+      const dr={id:Date.now(),type,cat:selCat?.icon||"❓",catName:selCat?.name||"Без категории",note,amount:raw,dateStr:today(),time:nowTime(),currency,isDraft:true};
+      setData(d=>({...d,drafts:[dr,...d.drafts]}));
+    }
+    setDraftMsg(true);setTimeout(()=>setDraftMsg(false),2200);
+    setAmount("");setSelCat(null);setNote("");
+  }
+
+  if(showDrafts)return h(DraftsScreen,{data,setData,onClose:()=>setShowDrafts(false),onComplete:(dr)=>{
+    setShowDrafts(false);
+    setType(dr.type);setAmount(String(dr.amount));setNote(dr.note);
+    setSelCat({icon:dr.cat,name:dr.catName});
+    setData(d=>({...d,drafts:d.drafts.filter(x=>x.id!==dr.id)}));
+  }});
+
+  return h("div",{className:"screen anim-fade"},
+    h("div",{className:"ph"},
+      h("div",{className:"back",onClick:()=>setTab("home")},"←"),
+      h("div",{className:"ph-title"},"Новая запись"),
+      h("div",{className:"ph-action",onClick:()=>setShowDrafts(true),style:{position:"relative"}},
+        "Черновики",
+        data.drafts.length>0?h("div",{style:{position:"absolute",top:-3,right:-3,width:8,height:8,borderRadius:"50%",background:C.rd,border:`2px solid ${C.bg}`}}):null
+      )
+    ),
+    draftMsg&&h("div",{style:{margin:"0 16px 8px",background:C.amBg,borderRadius:12,padding:"10px 14px",fontSize:13,fontWeight:700,color:C.am}},"✓ Черновик сохранён"),
+    h("div",{className:"scroll",style:{padding:"0 16px"}},
+      h("div",{className:"card",style:{padding:18,marginBottom:8}},
+        // type
+        h("div",{className:"typerow"},
+          ["expense","income"].map(t=>h("div",{key:t,className:"typebtn "+(type===t?(t==="expense"?"exp-on":"inc-on"):""),onClick:()=>{setType(t);setSelCat(null);}},
+            t==="expense"?"Расход":"Доход"))
+        ),
+        // amount + currency
+        h("label",{className:"flabel"},"СУММА"),
+        h("div",{style:{display:"flex",gap:8,marginBottom:14,alignItems:"center"}},
+          h("div",{className:"currrow"},
+            ["$","UZS"].map(c=>h("div",{key:c,className:"currp"+(currency===c?" act":""),onClick:()=>setCurrency(c)},c))
+          ),
+          h("input",{className:"finput",style:{flex:1,marginBottom:0,fontSize:26},placeholder:currency==="$"?"0":"0",inputMode:"numeric",value:amount,onChange:e=>setAmount(e.target.value)})
+        ),
+        currency==="$"&&h("div",{style:{marginBottom:14}},
+          h("label",{className:"flabel"},"КУРС (1$ = ? СУМ)"),
+          h("input",{className:"finput sm",style:{marginBottom:0},value:usdRate,inputMode:"numeric",onChange:e=>setUsdRate(e.target.value)})
+        ),
+        // cats
+        h("label",{className:"flabel"},"КАТЕГОРИЯ"),
+        h("div",{className:"catgrid"},
+          cats.map(c=>h("div",{key:c.name,className:"catbtn"+(selCat?.name===c.name?" sel-"+(type==="expense"?"e":"i"):""),onClick:()=>setSelCat(c)},
+            h("div",{className:"catbtn-icon"},c.icon),
+            h("div",{className:"catbtn-name"},c.name)
+          ))
+        ),
+        // note
+        h("label",{className:"flabel"},"ПРИМЕЧАНИЕ"),
+        h("textarea",{className:"finput",style:{marginBottom:12},placeholder:"Необязательно...",value:note,onChange:e=>setNote(e.target.value)}),
+        // recurring
+        h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 0",marginBottom:10}},
+          h("div",null,
+            h("div",{style:{fontSize:14,fontWeight:600,color:C.ink}},"Повторяющаяся"),
+            h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Добавлять каждый месяц")),
+          h(Toggle,{on:recurring,cb:()=>setRecurring(!recurring)})
+        ),
+        // xp hint
+        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:"rgba(245,158,11,.06)",borderRadius:12,marginBottom:16}},
+          h("div",{style:{fontSize:18}},"⭐"),
+          h("div",{style:{fontSize:12,fontWeight:600,color:C.am}},"+10 XP за запись · серия продолжается")
+        ),
+        // actions
+        h("div",{style:{display:"flex",gap:10}},
+          h("div",{className:"btn btn-gray",style:{flex:1,fontSize:12},onClick:draft},"Черновик"),
+          h("div",{className:"btn "+(canSave?"btn-ink":""),style:{flex:2,fontSize:12,background:canSave?C.ink:C.bdr,color:canSave?"#fff":C.ink3,cursor:canSave?"pointer":"default",borderRadius:16,padding:16,fontFamily:F,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",textAlign:"center"},onClick:save},"Сохранить")
+        )
+      ),
+      h("div",{style:{height:20}})
+    )
+  );
+}
+
+/* ── DRAFTS ── */
+function DraftsScreen({data,setData,onClose,onComplete}){
+  return h("div",{className:"screen anim-fade"},
+    h("div",{className:"ph"},
+      h("div",{className:"back",onClick:onClose},"←"),
+      h("div",{className:"ph-title"},"Черновики")
+    ),
+    h("div",{className:"scroll",style:{padding:"0 16px"}},
+      data.drafts.length===0
+        ?h("div",{style:{textAlign:"center",padding:"60px 20px"}},
+          h("div",{style:{fontSize:48,marginBottom:12}},"📝"),
+          h("div",{style:{fontFamily:F,fontSize:16,fontWeight:700,color:C.ink,marginBottom:6}},"Черновиков нет"),
+          h("div",{style:{fontSize:13,color:C.ink3}},"Сохраните запись как черновик\nчтобы вернуться к ней позже")
+        )
+        :data.drafts.map(dr=>h("div",{key:dr.id,style:{background:"#fff",borderRadius:18,padding:"14px 16px",marginBottom:8}},
+          h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}},
+            h("div",{style:{display:"flex",alignItems:"center",gap:10}},
+              h("div",{style:{width:38,height:38,borderRadius:12,background:dr.type==="income"?C.grBg:C.rdBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}},dr.cat),
+              h("div",null,
+                h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.ink}},dr.catName),
+                h("div",{style:{fontSize:10,color:C.ink3,marginTop:2}},dr.dateStr)
+              )
+            ),
+            h("div",{style:{fontFamily:F,fontSize:16,fontWeight:700,color:C.ink}},(dr.type==="income"?"+":"−")+fmt(dr.amount))
+          ),
+          h("div",{style:{display:"flex",gap:8}},
+            h("div",{className:"btn btn-gray",style:{flex:1,padding:"11px",fontSize:11},onClick:()=>{
+              API.delDraft(dr.id).catch(e=>console.error(e));
+              setData(d=>({...d,drafts:d.drafts.filter(x=>x.id!==dr.id)}));
+            }},"Удалить"),
+            h("div",{className:"btn btn-ink",style:{flex:2,padding:"11px",fontSize:11},onClick:()=>onComplete(dr)},"Завершить")
+          )
+        )),
+      h("div",{style:{height:20}})
+    )
+  );
+}
+
+/* ── SUCCESS ── */
+function SuccessScreen({tx,xp,totalXp,onDone,setTab}){
+  return h("div",{className:"success-wrap anim-up"},
+    h("div",{style:{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:30}},
+      h("div",{style:{width:80,height:80,borderRadius:26,background:C.grBg,border:`2px solid ${C.grMd}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,marginBottom:18}},"✓"),
+      h("div",{style:{fontFamily:F,fontSize:26,fontWeight:800,color:C.ink,marginBottom:6}},"Сохранено!"),
+      h("div",{style:{fontSize:14,color:C.ink3,marginBottom:28}},
+        tx?(tx.type==="income"?"+":"−")+fmt(tx.amount)+" сум · "+tx.catName:"Запись добавлена"),
+      h("div",{style:{background:"#fff",borderRadius:18,padding:16,display:"flex",alignItems:"center",gap:12,marginBottom:14,width:"100%"}},
+        h("div",{style:{fontSize:26}},"⭐"),
+        h("div",{style:{flex:1}},
+          h("div",{style:{fontFamily:F,fontSize:14,fontWeight:700,color:C.ink}},"+"+xp+" XP заработано"),
+          h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Запись + категория + серия")
+        ),
+        h("div",{style:{textAlign:"right"}},
+          h("div",{style:{fontFamily:F,fontSize:16,fontWeight:700,color:C.am}},fmt(totalXp)),
+          h("div",{style:{fontSize:10,color:C.ink3}},"XP всего")
+        )
+      ),
+      h("div",{className:"btn btn-ink",style:{width:"100%",marginBottom:10,fontSize:14},onClick:()=>{onDone();setTab("home");}},"← На главную"),
+      h("div",{onClick:()=>{onDone();setTab("add");},style:{fontSize:13,color:C.ink3,cursor:"pointer",fontWeight:600,textAlign:"center"}},"Добавить ещё одну")
+    )
+  );
+}
+
+/* ── ANALYTICS ── */
+function AnalyticsScreen({data,onTxTap}){
+  const{txs}=data;
+  const[search,setSearch]=useState("");
+  const[filterType,setFilterType]=useState("all");
+  const[dateMode,setDateMode]=useState("period");
+  const[dateFrom,setDateFrom]=useState("2025-05-01");
+  const[dateTo,setDateTo]=useState("2025-05-13");
+  const[singleDate,setSingleDate]=useState(today());
+  const[selCats,setSelCats]=useState([]);
+  const[month,setMonth]=useState("Май 2025");
+  const[showFilters,setShowFilters]=useState(false);
+  const allCats=[...new Set(txs.map(t=>t.catName))];
+  const catIcons={};txs.forEach(t=>{catIcons[t.catName]=t.cat;});
+
+  const filtered=txs.filter(t=>{
+    if(filterType!=="all"&&t.type!==filterType)return false;
+    if(selCats.length>0&&!selCats.includes(t.catName))return false;
+    if(search&&!(t.catName.toLowerCase().includes(search.toLowerCase())||t.note.toLowerCase().includes(search.toLowerCase())))return false;
+    if(dateMode==="period"){if(t.dateStr<dateFrom||t.dateStr>dateTo)return false;}
+    else{if(t.dateStr!==singleDate)return false;}
+    return true;
+  }).sort((a,b)=>b.dateStr.localeCompare(a.dateStr));
+
+  const income=filtered.filter(t=>t.type==="income").reduce((a,b)=>a+b.amount,0);
+  const expense=filtered.filter(t=>t.type==="expense").reduce((a,b)=>a+b.amount,0);
+  const catMap={};
+  filtered.filter(t=>t.type==="expense").forEach(t=>{catMap[t.catName]=(catMap[t.catName]||0)+t.amount;});
+  const catRows=Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
+  const maxCat=catRows[0]?.[1]||1;
+
+  return h("div",{className:"screen anim-fade"},
+    h("div",{style:{display:"flex",alignItems:"center",padding:"6px 20px 12px",background:C.bg}},
+      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:C.ink,flex:1}},"Аналитика"),
+      h("div",{className:"ph-action",onClick:()=>setShowFilters(!showFilters),style:{background:showFilters?C.ink:"#fff",color:showFilters?"#fff":C.ink2}},showFilters?"✕ Фильтры":"⚙ Фильтры")
+    ),
+    // month tabs
+    h("div",{style:{background:"#fff",borderRadius:14,padding:3,display:"flex",gap:3,margin:"0 16px 10px",flexShrink:0}},
+      ["Май 2025","Апр 2025"].map(m=>h("div",{key:m,onClick:()=>setMonth(m),style:{flex:1,padding:"8px 4px",borderRadius:11,fontFamily:F,fontSize:11,fontWeight:700,textAlign:"center",cursor:"pointer",background:month===m?C.ink:"transparent",color:month===m?"#fff":C.ink2,transition:"all .12s"}},m))
+    ),
+    // type pills
+    h("div",{className:"fbar"},
+      [{id:"all",l:"Все"},{id:"expense",l:"Расходы"},{id:"income",l:"Доходы"}].map(({id,l})=>
+        h("div",{key:id,className:"fpill"+(filterType===id?" act":""),onClick:()=>setFilterType(id)},l))
+    ),
+    showFilters&&h("div",{style:{padding:"0 16px 10px",flexShrink:0,animation:"slideDown .2s ease"}},
+      h("div",{style:{display:"flex",gap:5,background:C.bg,borderRadius:11,padding:3,marginBottom:10}},
+        [{id:"period",l:"Период"},{id:"day",l:"День"}].map(({id,l})=>
+          h("div",{key:id,onClick:()=>setDateMode(id),style:{flex:1,padding:"8px",borderRadius:9,fontFamily:F,fontSize:11,fontWeight:700,textAlign:"center",cursor:"pointer",background:dateMode===id?"#fff":C.bg,color:dateMode===id?C.ink:C.ink2,boxShadow:dateMode===id?"0 1px 3px rgba(0,0,0,.08)":"none",transition:"all .12s"}},l))
+      ),
+      dateMode==="period"
+        ?h("div",{style:{display:"flex",gap:8}},
+          h("input",{type:"date",style:{flex:1,border:"none",borderRadius:11,padding:"9px 10px",fontSize:13,fontFamily:"'DM Sans',sans-serif",color:C.ink,background:C.bg,outline:"none"},value:dateFrom,onChange:e=>setDateFrom(e.target.value)}),
+          h("span",{style:{fontSize:13,color:C.ink3,alignSelf:"center"}},"—"),
+          h("input",{type:"date",style:{flex:1,border:"none",borderRadius:11,padding:"9px 10px",fontSize:13,fontFamily:"'DM Sans',sans-serif",color:C.ink,background:C.bg,outline:"none"},value:dateTo,onChange:e=>setDateTo(e.target.value)})
+          )
+        :h("input",{type:"date",style:{width:"100%",border:"none",borderRadius:11,padding:"9px 10px",fontSize:13,fontFamily:"'DM Sans',sans-serif",color:C.ink,background:C.bg,outline:"none"},value:singleDate,onChange:e=>setSingleDate(e.target.value)})
+    ),
+    // search
+    h("div",{style:{padding:"0 16px 8px",flexShrink:0}},
+      h("input",{className:"sinput",placeholder:"🔍  Поиск...",value:search,onChange:e=>setSearch(e.target.value)})
+    ),
+    // cat chips
+    h("div",{style:{display:"flex",gap:6,overflow:"auto",padding:"0 16px 10px",flexShrink:0}},
+      allCats.map(name=>h("div",{key:name,onClick:()=>setSelCats(p=>p.includes(name)?p.filter(c=>c!==name):[...p,name]),style:{display:"flex",alignItems:"center",gap:4,padding:"7px 12px",borderRadius:999,background:selCats.includes(name)?C.ink:"#fff",fontSize:11,fontWeight:700,color:selCats.includes(name)?"#fff":C.ink2,cursor:"pointer",flexShrink:0,transition:"all .12s"}},
+        (catIcons[name]||"")+" "+name))
+    ),
+    h("div",{className:"scroll",style:{padding:"0 16px"}},
+      // KPI
+      h("div",{className:"kpi-row"},
+        h("div",{className:"kpi-cell"},
+          h("div",{className:"kpi-val",style:{color:C.rd}},fmt(expense)),
+          h("div",{className:"kpi-lab"},"Расходы")),
+        h("div",{style:{background:C.bdr}}),
+        h("div",{className:"kpi-cell"},
+          h("div",{className:"kpi-val"},filtered.length),
+          h("div",{className:"kpi-lab"},"Операций")),
+        h("div",{style:{background:C.bdr}}),
+        h("div",{className:"kpi-cell"},
+          h("div",{className:"kpi-val",style:{color:C.gr}},fmt(income)),
+          h("div",{className:"kpi-lab"},"Доход"))
+      ),
+      // cat bars
+      catRows.length>0&&h("div",{className:"card",style:{padding:16,marginBottom:10}},
+        h("div",{style:{fontFamily:F,fontSize:14,fontWeight:800,color:C.ink,marginBottom:14}},"По категориям"),
+        ...catRows.map(([name,amt])=>h("div",{key:name,style:{display:"flex",alignItems:"center",gap:10,marginBottom:10}},
+          h("div",{style:{fontSize:18,width:26,textAlign:"center",flexShrink:0}},catIcons[name]||"·"),
+          h("div",{style:{fontSize:12,fontWeight:600,color:C.ink,width:76,flexShrink:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},name),
+          h("div",{className:"ptrack",style:{flex:1}},h("div",{className:"pfill r",style:{width:Math.round(amt/maxCat*100)+"%"}})),
+          h("div",{style:{fontSize:11,fontWeight:700,color:C.ink2,width:72,textAlign:"right",flexShrink:0}},fmt(amt))
+        ))
+      ),
+      h("div",{style:{fontFamily:F,fontSize:14,fontWeight:800,color:C.ink,marginBottom:10}},"Операции ("+filtered.length+")"),
+      filtered.length===0
+        ?h("div",{style:{textAlign:"center",padding:"40px 20px"}},
+          h("div",{style:{fontSize:40,marginBottom:10}},"🔍"),
+          h("div",{style:{fontFamily:F,fontSize:14,fontWeight:700,color:C.ink}})
+        )
+        :filtered.map(tx=>h(TxCard,{key:tx.id,tx,onTap:onTxTap})),
+      h("div",{style:{height:20}})
+    )
+  );
+}
+
+/* ── REWARDS ── */
+function RewardsScreen({data,setData}){
+  const[section,setSection]=useState("xp"); // xp | badges | leaderboard
+  const{streak,xp,level,achievements}=data;
+  const xpNext=level*500;
+  const xpLog=data.xp_log||[];
+  const tabs=[{id:"xp",l:"Очки"},{id:"badges",l:"Значки"},{id:"leaderboard",l:"Рейтинг"}];
+
+  return h("div",{className:"screen anim-fade"},
+    h("div",{className:"rw-hero"},
+      h("div",{style:{position:"relative",zIndex:1}}),
+    h("div",{style:{padding:"4px 20px 0",position:"relative",zIndex:1}},
+        h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.3)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"ВСЕГО ОЧКОВ"),
+        h("div",{style:{display:"flex",alignItems:"baseline",gap:8,marginBottom:4}},
+          h("div",{style:{fontFamily:F,fontSize:44,fontWeight:800,color:C.am2,lineHeight:1}},fmt(xp)),
+          h("div",{style:{fontFamily:F,fontSize:18,fontWeight:700,color:"rgba(245,158,11,.5)"}},"XP")
+        ),
+        h("div",{style:{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:14}},"Gold Analyst · Уровень "+level),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1px 1fr 1px 1fr",marginBottom:14}},
+          h("div",null,
+            h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:"#fff"}},"+120"),
+            h("div",{style:{fontSize:10,color:"rgba(255,255,255,.3)",letterSpacing:1,textTransform:"uppercase",marginTop:2}},"Сегодня")),
+          h("div",{style:{background:"rgba(255,255,255,.1)"}}),
+          h("div",{style:{paddingLeft:12}},
+            h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:"#fff"}},"+840"),
+            h("div",{style:{fontSize:10,color:"rgba(255,255,255,.3)",letterSpacing:1,textTransform:"uppercase",marginTop:2}},"Эта неделя")),
+          h("div",{style:{background:"rgba(255,255,255,.1)"}}),
+          h("div",{style:{paddingLeft:12}},
+            h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.am2}},"+"+fmt(xp)),
+            h("div",{style:{fontSize:10,color:"rgba(255,255,255,.3)",letterSpacing:1,textTransform:"uppercase",marginTop:2}},"Этот месяц"))
+        ),
+        // xp bar
+        h("div",{style:{background:"rgba(255,255,255,.06)",borderRadius:12,padding:"10px 12px",marginBottom:14}},
+          h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:6}},
+            h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.4)",letterSpacing:1}},`Уровень ${level} → ${level+1}`),
+            h("div",{style:{fontSize:10,fontWeight:700,color:"rgba(255,255,255,.3)"}},h("span",{style:{color:C.am2}},fmt(xp))," / "+fmt(xpNext))
+          ),
+          h("div",{className:"ptrack",style:{background:"rgba(255,255,255,.07)"}},
+            h("div",{className:"pfill xp",style:{width:Math.min(Math.round(xp/xpNext*100),100)+"%"}}))
+        ),
+        // tabs
+        h("div",{style:{display:"flex",gap:4}},
+          tabs.map(t=>h("div",{key:t.id,onClick:()=>setSection(t.id),style:{flex:1,padding:"10px 4px",borderRadius:"12px 12px 0 0",fontFamily:F,fontSize:10,fontWeight:700,textAlign:"center",textTransform:"uppercase",cursor:"pointer",background:section===t.id?"#F4F5F7":"transparent",color:section===t.id?C.ink:"rgba(255,255,255,.4)",transition:"all .12s"}},t.l))
+        )
+      )
+    ),
+    h("div",{className:"scroll",style:{padding:"12px 16px 0"}},
+      section==="xp"&&h("div",null,
+        // how to earn
+        h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:12}},"КАК ЗАРАБАТЫВАТЬ ОЧКИ"),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}},
+          [{icon:"➕",name:"Операция",pts:"+10 XP",desc:"За каждую добавленную запись"},
+           {icon:"🔥",name:"Серия",pts:"+20 XP",desc:"Ежедневный вход + операция"},
+           {icon:"✅",name:"Черновик",pts:"+15 XP",desc:"Завершить черновик"},
+           {icon:"📂",name:"Категория",pts:"+5 XP",desc:"Указать категорию"},
+           {icon:"📊",name:"Отчёт",pts:"+5 XP",desc:"Открыть раздел аналитики"},
+           {icon:"🥇",name:"Значок",pts:"+50–500",desc:"Разблокировать достижение"},
+          ].map(({icon,name,pts,desc})=>h("div",{key:name,style:{background:"#fff",borderRadius:16,padding:"14px"}},
+            h("div",{style:{fontSize:26,marginBottom:8}}),
+            h("div",{style:{fontSize:30,marginBottom:6}},icon),
+            h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.ink,marginBottom:3}},name),
+            h("div",{style:{fontFamily:F,fontSize:14,fontWeight:800,color:C.am,marginBottom:4}},pts),
+            h("div",{style:{fontSize:11,color:C.ink3,lineHeight:1.4}},desc)
+          ))
+        ),
+        // history
+        h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"ИСТОРИЯ · СЕГОДНЯ"),
+        ...xpLog.map((e,i)=>h("div",{key:i,style:{background:"#fff",borderRadius:14,padding:"12px 14px",marginBottom:7,display:"flex",alignItems:"center",gap:12}},
+          h("div",{style:{width:36,height:36,borderRadius:11,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}},e.icon),
+          h("div",{style:{flex:1}},
+            h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},e.label),
+            h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},e.sub)
+          ),
+          h("div",{style:{fontFamily:F,fontSize:15,fontWeight:700,color:C.am2}},"+"+e.pts)
+        ))
+      ),
+      section==="badges"&&h("div",null,
+        h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"ПОЛУЧЕНО"),
+        h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}},
+          achievements.filter(a=>a.earned).map(a=>h("div",{key:a.id,style:{background:"#fff",borderRadius:16,padding:"12px 8px",textAlign:"center"}},
+            h("div",{style:{width:48,height:48,borderRadius:15,background:a.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 8px"}},a.icon),
+            h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink,lineHeight:1.2,marginBottom:2}},a.name),
+            h("div",{style:{fontSize:10,color:C.ink3}},a.desc),
+            h("div",{style:{fontSize:9,fontWeight:700,color:C.gr,marginTop:4}},"✓ "+a.date),
+            h("div",{style:{marginTop:4,background:C.amBg,color:C.am,fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:6,display:"inline-block"}},"+"+a.xp+" XP")
+          ))
+        ),
+        h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"В ПРОЦЕССЕ"),
+        h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}},
+          achievements.filter(a=>!a.earned).map(a=>h("div",{key:a.id,style:{background:a.locked?C.bg:"#fff",borderRadius:16,padding:"12px 8px",textAlign:"center"}},
+            h("div",{style:{width:48,height:48,borderRadius:15,background:a.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 8px",filter:a.locked?"grayscale(1)":"none",opacity:a.locked?.3:1}},a.icon),
+            h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:a.locked?C.ink3:C.ink,lineHeight:1.2,marginBottom:2}},a.name),
+            h("div",{style:{fontSize:10,color:C.ink3}},a.desc),
+            !a.locked&&a.progress!=null&&h("div",{style:{marginTop:6}},
+              h("div",{className:"ptrack"},h("div",{className:"pfill a",style:{width:a.progress+"%"}})),
+              h("div",{style:{fontSize:9,color:C.ink3,marginTop:3}},a.label)
+            ),
+            h("div",{style:{marginTop:4,background:a.locked?C.bg:C.amBg,color:a.locked?C.ink3:C.am,fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:6,display:"inline-block"}},"+"+a.xp+" XP")
+          ))
+        )
+      ),
+      section==="leaderboard"&&h(LeaderboardSection,{data}),
+      h("div",{style:{height:20}})
+    )
+  );
+}
+
+
+/* ── LEADERBOARD SECTION (live data) ── */
+function LeaderboardSection({data}){
+  const[rows,setRows]=useState(null);
+  const BG_COLORS=["#D97706",C.bl,"#374151","#059669",C.pu,"#DC2626","#0891B2","#7C3AED"];
+  useEffect(()=>{
+    API.leaderboard()
+      .then(r=>setRows(r))
+      .catch(()=>setRows([]));
+  },[]);
+
+  if(rows===null)return h("div",{style:{padding:20,textAlign:"center",color:C.ink3,fontSize:13}},"Загрузка рейтинга...");
+  if(rows.length===0)return h("div",{style:{padding:20,textAlign:"center",color:C.ink3,fontSize:13}},"Станьте первым в рейтинге!");
+
+  const top3=rows.slice(0,3);
+  const rest=rows.slice(3);
+  const podium=[
+    top3[1]||null,  // rank 2 left
+    top3[0]||null,  // rank 1 center
+    top3[2]||null,  // rank 3 right
+  ].filter(Boolean);
+  const heightMap={1:50,2:36,3:26};
+
+  return h("div",null,
+    h("div",{style:{background:C.dk,borderRadius:20,padding:"16px 14px 0",marginBottom:10,overflow:"hidden"}},
+      h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.25)",letterSpacing:2,textTransform:"uppercase",textAlign:"center",marginBottom:16}},"Рейтинг · Все время"),
+      h("div",{style:{display:"flex",alignItems:"flex-end",justifyContent:"center",gap:10}},
+        podium.map(f=>{
+          const isFirst=f.rank===1;
+          const color=BG_COLORS[(f.rank-1)%BG_COLORS.length];
+          const h_=heightMap[f.rank]||26;
+          return h("div",{key:f.id,style:{display:"flex",flexDirection:"column",alignItems:"center"}},
+            isFirst
+              ? h("div",{style:{position:"relative"}},
+                  h("div",{style:{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",fontSize:14}},"👑"),
+                  h("div",{style:{width:52,height:52,borderRadius:18,background:f.is_you?C.pu:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff",marginBottom:6,boxShadow:`0 0 0 2px ${C.am2},0 4px 16px rgba(245,158,11,.3)`}},f.name[0])
+                )
+              : h("div",{style:{width:44,height:44,borderRadius:14,background:f.is_you?C.pu:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:18,fontWeight:800,color:"#fff",marginBottom:6}},f.name[0]),
+            h("div",{style:{fontFamily:F,fontSize:11,fontWeight:700,color:"#fff",marginBottom:2}},f.is_you?"Вы":f.name),
+            h("div",{style:{fontSize:10,color:isFirst?C.am2:"rgba(255,255,255,.35)",marginBottom:6}},fmt(f.xp)+" XP"),
+            h("div",{style:{borderRadius:"9px 9px 0 0",width:84,height:h_,background:isFirst?"rgba(245,158,11,.12)":"rgba(255,255,255,.05)",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,color:isFirst?C.am2:"rgba(255,255,255,.25)"}},f.rank)
+          );
+        })
+      )
+    ),
+    ...rows.map(f=>{
+      const color=BG_COLORS[(f.rank-1)%BG_COLORS.length];
+      return h("div",{key:f.id,style:{display:"flex",alignItems:"center",gap:10,background:f.is_you?C.puBg:"#fff",borderRadius:14,padding:"12px 14px",marginBottom:7}},
+        h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:f.is_you?C.pu:C.ink3,width:20,textAlign:"center",flexShrink:0}},f.rank),
+        h("div",{style:{width:36,height:36,borderRadius:11,background:f.is_you?C.pu:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:14,fontWeight:800,color:"#fff",flexShrink:0}},f.name[0]),
+        h("div",{style:{flex:1}},
+          h("div",{style:{fontSize:13,fontWeight:600,color:f.is_you?"#5B21B6":C.ink}},f.name+(f.is_you?" · Вы":"")),
+          h("div",{style:{fontSize:10,color:C.ink3,marginTop:2}},"LV "+f.level+" · "+f.streak+"🔥")
+        ),
+        h("div",{style:{textAlign:"right"}},
+          h("div",{style:{fontFamily:F,fontSize:14,fontWeight:700,color:f.is_you?C.pu:C.ink}},fmt(f.xp)),
+          h("div",{style:{fontSize:10,color:C.ink3}},"XP")
+        )
+      );
+    }),
+    h("div",{style:{height:20}})
+  );
+}
+
+/* ── ACCOUNTS + BUDGET screen ── */
+function AccountsScreen({data,setData,onBack}){
+  const[showAddBudget,setShowAddBudget]=useState(false);
+  const[editBudget,setEditBudget]=useState(null);
+  const budgets=data.budgets||INIT_BUDGETS;
+
+  async function saveBudget(b){
+    try{
+      if(b.id){
+        const res=await API.editBudget(b.id,{name:b.name,icon:b.icon,limit_amt:b.limit,color:b.color});
+        setData(d=>({...d,budgets:d.budgets.map(x=>x.id===res.id?res:x)}));
+      }else{
+        const res=await API.addBudget({name:b.name,icon:b.icon,limit_amt:b.limit,color:b.color});
+        setData(d=>({...d,budgets:[...d.budgets,res]}));
+      }
+    }catch(e){ console.error(e); }
+    setShowAddBudget(false);setEditBudget(null);
+  }
+  async function deleteBudget(id){
+    try{await API.delBudget(id);}catch(e){console.error(e);}
+    setData(d=>({...d,budgets:d.budgets.filter(b=>b.id!==id)}));
+  }
+
+  return h("div",{className:"screen anim-fade"},
+    h("div",{className:"ph"},
+      h("div",{className:"back",onClick:onBack},"←"),
+      h("div",{className:"ph-title"},"Счета"),
+      h("div",{className:"ph-action"},"+")
+    ),
+    h("div",{className:"scroll",style:{padding:"0 16px"}},
+      // wallet card
+      h("div",{className:"wallet",style:{marginBottom:10}},
+        h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"ОБЩИЙ БАЛАНС"),
+        h("div",{style:{fontFamily:F,fontSize:32,fontWeight:800,color:"#fff",lineHeight:1.1,marginBottom:4}},"1 247 500 ",h("span",{style:{fontSize:16,color:"rgba(255,255,255,.4)"}},"сум")),
+        h("div",{style:{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:16}},"Все счета вместе"),
+        h("div",{style:{height:1,background:"rgba(255,255,255,.08)",marginBottom:16}}),
+        h("div",{style:{display:"flex",justifyContent:"space-between"}},
+          h("div",null,
+            h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"КАРТА"),
+            h("div",{style:{fontFamily:F,fontSize:22,fontWeight:700,color:"#fff"}},"897 500")
+          ),
+          h("div",{style:{textAlign:"right"}},
+            h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"НАЛИЧНЫЕ"),
+            h("div",{style:{fontFamily:F,fontSize:22,fontWeight:700,color:"#fff"}},"350 000")
+          )
+        )
+      ),
+      // savings
+      h("div",{style:{background:C.grBg,borderRadius:20,padding:18,marginBottom:10}},
+        h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:C.gr,letterSpacing:2,textTransform:"uppercase",marginBottom:5}},"НАКОПЛЕНИЯ · ОТПУСК В ДУБАЕ ✈️"),
+        h("div",{style:{fontFamily:F,fontSize:26,fontWeight:800,color:"#14532D",marginBottom:5}},"1 200 000 ",h("span",{style:{fontSize:14,color:C.gr}},"сум")),
+        h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:6}},
+          h("span",{style:{fontSize:12,fontWeight:700,color:C.gr}},"Цель: 5 000 000"),
+          h("span",{style:{fontSize:12,fontWeight:700,color:C.gr}},"24%")),
+        h("div",{className:"ptrack",style:{marginBottom:6}},h("div",{className:"pfill g",style:{width:"24%"}})),
+        h("div",{style:{fontSize:11,color:C.gr,marginTop:4}},"Осталось 3 800 000 сум · ≈ 4 месяца при текущем темпе")
+      ),
+      // USD
+      h("div",{className:"card",style:{padding:18,marginBottom:16,display:"flex",alignItems:"center",justifyContent:"space-between"}},
+        h("div",null,
+          h("div",{style:{fontSize:11,fontWeight:700,color:C.ink3,letterSpacing:1.5,textTransform:"uppercase",marginBottom:4}},"ДОЛЛАРЫ · USD"),
+          h("div",{style:{fontFamily:F,fontSize:26,fontWeight:800,color:C.ink}},"$250"),
+          h("div",{style:{fontSize:11,color:C.ink3,marginTop:3}},"≈ 3 175 000 сум (1$ = 12 700)")
+        ),
+        h("div",{style:{fontSize:36}},"🇺🇸")
+      ),
+      // budgets
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}},
+        h("div",{style:{fontFamily:F,fontSize:16,fontWeight:800,color:C.ink}},"Бюджеты · май"),
+        h("div",{onClick:()=>setShowAddBudget(true),style:{fontSize:12,fontWeight:700,color:C.ink2,cursor:"pointer",padding:"6px 12px",borderRadius:10,background:"#fff"}},"Настроить →")
+      ),
+      ...budgets.map(b=>{
+        const pct=Math.round(b.spent/b.limit*100);
+        const color=pct>=90?"r":pct>=70?"a":"g";
+        return h("div",{key:b.id,className:"budg-item",onClick:()=>setEditBudget(b)},
+          h("div",{style:{display:"flex",alignItems:"center",gap:12,marginBottom:10}},
+            h("div",{style:{width:42,height:42,borderRadius:14,background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}},b.icon),
+            h("div",{style:{flex:1}},
+              h("div",{style:{fontFamily:F,fontSize:15,fontWeight:700,color:C.ink}},b.name),
+              h("div",{style:{fontSize:12,color:C.ink3,marginTop:2}},fmt(b.spent)+" / "+fmt(b.limit)+" сум")
+            ),
+            h("span",{style:{fontSize:11,fontWeight:700,letterSpacing:.8,padding:"5px 10px",borderRadius:9,display:"inline-block",background:pct>=90?C.rdBg:pct>=70?C.amBg:C.grBg,color:pct>=90?C.rd:pct>=70?C.am:C.gr}},pct+"%")
+          ),
+          h("div",{className:"ptrack"},h("div",{className:`pfill ${color}`,style:{width:pct+"%"}}))
+        );
+      }),
+      h("div",{className:"btn btn-gray",style:{width:"100%",marginTop:4},onClick:()=>setShowAddBudget(true)},"+ Добавить бюджет"),
+      h("div",{style:{height:20}}),
+
+      // Add budget modal
+      showAddBudget&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowAddBudget(false)}},
+        h(BudgetModal,{budget:null,onClose:()=>setShowAddBudget(false),onSave:(b)=>{saveBudget(b);setShowAddBudget(false);}})
+      ),
+      editBudget&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setEditBudget(null)}},
+        h(BudgetModal,{budget:editBudget,onClose:()=>setEditBudget(null),onSave:(b)=>{saveBudget(b);setEditBudget(null);},onDelete:(id)=>{deleteBudget(id);setEditBudget(null);}})
+      )
+    )
+  );
+}
+
+function BudgetModal({budget,onClose,onSave,onDelete}){
+  const[name,setName]=useState(budget?.name||"");
+  const[icon,setIcon]=useState(budget?.icon||"📦");
+  const[limit,setLimit]=useState(budget?String(budget.limit):"");
+  const icons=["🛒","🏠","🚌","🍕","💊","🎬","👕","📚","💡","📱","🎮","✈️"];
+  return h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"85%"}},
+    h("div",{className:"mhandle"}),
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}},
+      h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},budget?"Редактировать бюджет":"Новый бюджет"),
+      h("div",{onClick:onClose,style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
+    ),
+    h("label",{className:"flabel"},"ИКОНКА"),
+    h("div",{style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:16}},
+      icons.map(ic=>h("div",{key:ic,onClick:()=>setIcon(ic),style:{width:44,height:44,borderRadius:14,background:icon===ic?C.ink:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,cursor:"pointer",transition:"all .12s"}},ic))
+    ),
+    h("label",{className:"flabel"},"НАЗВАНИЕ"),
+    h("input",{className:"finput sm",style:{marginBottom:14},placeholder:"Продукты",value:name,onChange:e=>setName(e.target.value)}),
+    h("label",{className:"flabel"},"ЛИМИТ (СУМ)"),
+    h("input",{className:"finput",style:{marginBottom:20},inputMode:"numeric",placeholder:"200 000",value:limit,onChange:e=>setLimit(e.target.value)}),
+    h("div",{style:{display:"flex",gap:10}},
+      budget&&h("div",{className:"btn btn-red-out",style:{flex:1},onClick:()=>{onDelete&&onDelete(budget.id)}},"Удалить"),
+      h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>{
+        if(!name||!limit)return;
+        onSave({id:budget?.id||Date.now(),name,icon,limit:parseInt(limit)||0,spent:budget?.spent||0,color:C.gr});
+      }},"Сохранить")
+    )
+  );
+}
+
+/* ── CATEGORIES MODAL ── */
+function CategoriesModal({onClose}){
+  const[showAdd,setShowAdd]=useState(false);
+  const[cats,setCats]=useState([...EXP_CATS.slice(0,5)]);
+  const[catType,setCatType]=useState("expense");
+  const[catName,setCatName]=useState("");
+  const[catIcon,setCatIcon]=useState("📦");
+  const colors=["#DC2626","#D97706","#EAB308","#16A34A","#2563EB","#7C3AED","#EC4899","#6B7280"];
+  const[selColor,setSelColor]=useState(colors[0]);
+  if(showAdd)return h("div",{className:"msheet",style:{overflowY:"auto",maxHeight:"90%"}},
+    h("div",{className:"mhandle"}),
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+      h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Новая категория"),
+      h("div",{onClick:()=>setShowAdd(false),style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
+    ),
+    h("label",{className:"flabel"},"ТИП"),
+    h("div",{className:"typerow",style:{marginBottom:16}},
+      ["expense","income"].map(t=>h("div",{key:t,className:"typebtn "+(catType===t?(t==="expense"?"exp-on":"inc-on"):""),onClick:()=>setCatType(t)},t==="expense"?"Расход":"Приход"))
+    ),
+    h("label",{className:"flabel"},"НАЗВАНИЕ КАТЕГОРИИ"),
+    h("input",{className:"finput sm",style:{marginBottom:14},placeholder:"Коммунальные услуги",value:catName,onChange:e=>setCatName(e.target.value)}),
+    h("label",{className:"flabel"},"ЦВЕТ"),
+    h("div",{style:{display:"flex",gap:8,marginBottom:14}},
+      colors.map(c=>h("div",{key:c,onClick:()=>setSelColor(c),style:{width:32,height:32,borderRadius:"50%",background:c,cursor:"pointer",boxShadow:selColor===c?`0 0 0 3px white, 0 0 0 5px ${c}`:"none",transition:"all .12s"}}))
+    ),
+    h("label",{className:"flabel"},"ЗНАЧОК (ОПЦИОНАЛЬНО)"),
+    h("div",{style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}},
+      ["💡","🚗","🛒","📱","🎮","✈️","🔧","🏥","🎓","🏋️"].map(ic=>h("div",{key:ic,onClick:()=>setCatIcon(ic),style:{width:42,height:42,borderRadius:12,background:catIcon===ic?C.bg:C.bg,border:`1.5px solid ${catIcon===ic?C.ink:C.bdr}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer"}},ic))
+    ),
+    h("div",{style:{display:"flex",gap:10}},
+      h("div",{className:"btn btn-gray",style:{flex:1},onClick:()=>setShowAdd(false)},"Отмена"),
+      h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>{
+        if(catName)setCats(p=>[...p,{icon:catIcon,name:catName}]);
+        setShowAdd(false);setCatName("");
+      }},"Добавить")
+    )
+  );
+  return h("div",{className:"msheet"},
+    h("div",{className:"mhandle"}),
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+      h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Категории"),
+      h("div",{onClick:onClose,style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
+    ),
+    h("div",{style:{maxHeight:280,overflowY:"auto"}},
+      cats.map((c,i)=>h("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"11px 0",borderBottom:`1px solid ${C.bdr}`}},
+        h("div",{style:{fontSize:22,width:36}}),
+        h("div",{style:{fontSize:22,width:36,textAlign:"center"}},c.icon),
+        h("div",{style:{flex:1,fontSize:14,fontWeight:600,color:C.ink}},c.name),
+        h("div",{onClick:()=>setCats(p=>p.filter((_,j)=>j!==i)),style:{fontSize:16,color:C.ink3,cursor:"pointer",padding:"4px 8px"}},"✕")
+      ))
+    ),
+    h("div",{className:"btn btn-ink",style:{width:"100%",marginTop:16},onClick:()=>setShowAdd(true)},"+ Добавить категорию")
+  );
+}
+
+/* ── PROFILE ── */
+function ProfileScreen({data,setData,onPatchUser}){
+  const[section,setSection]=useState("main");
+  const[notifs,setNotifs]=useState(data.notifs!==false);
+  const[weekly,setWeekly]=useState(data.weekly||false);
+  const[showEditProfile,setShowEditProfile]=useState(false);
+  const[showCats,setShowCats]=useState(false);
+  const{streak,xp,level,achievements}=data;
+  const xpNext=level*500;
+
+  if(section==="accounts")return h(AccountsScreen,{data,setData,onBack:()=>setSection("main")});
+
+  function DarkHero(){
+    return h("div",{className:"prof-hero"},
+    h("div",{style:{padding:"4px 20px 0",position:"relative",zIndex:1}},
+        h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}},
+          h("div",{style:{display:"flex",alignItems:"center",gap:14}},
+            h("div",{style:{position:"relative"}},
+              h("div",{style:{width:60,height:60,borderRadius:20,background:"#2C2C2E",border:"2px solid #3C3C3E",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:24,fontWeight:800,color:"#fff"}},TG_INITIAL),
+              h("div",{style:{position:"absolute",bottom:-7,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(90deg,#D97706,#F59E0B)",color:C.dk,fontFamily:F,fontSize:9,fontWeight:800,padding:"2px 7px",borderRadius:5,whiteSpace:"nowrap",border:`2px solid ${C.dk}`}},"LV "+level)
+            ),
+            h("div",null,
+              h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:"#fff"}},TG_NAME),
+              h("div",{style:{fontSize:12,color:"rgba(255,255,255,.35)",marginTop:2}},TG_USERNAME+" · Silver Saver 🥈")
+            )
+          ),
+          h("div",{onClick:()=>setShowEditProfile(true),style:{background:"rgba(255,255,255,.08)",borderRadius:11,padding:"8px 14px",fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.5)",letterSpacing:1,textTransform:"uppercase",cursor:"pointer"}},"Изменить")
+        ),
+        h("div",{style:{background:"rgba(255,255,255,.05)",borderRadius:14,padding:"10px 14px",marginBottom:0}},
+          h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:6}},
+            h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.4)",letterSpacing:1}},`Уровень ${level} → ${level+1}`),
+            h("div",{style:{fontSize:10,fontWeight:700,color:"rgba(255,255,255,.3)"}},h("span",{style:{color:C.am2}},fmt(xp))," / "+fmt(xpNext)+" XP")
+          ),
+          h("div",{className:"ptrack",style:{background:"rgba(255,255,255,.08)"}},
+            h("div",{className:"pfill xp",style:{width:Math.min(Math.round(xp/xpNext*100),100)+"%"}}))
+        ),
+        h("div",{className:"ph-stat-row"},
+          h("div",{style:{textAlign:"center",padding:"0 4px"}},
+            h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.am2,marginBottom:2}},"🔥 "+streak),
+            h("div",{style:{fontSize:9,fontWeight:600,color:"rgba(255,255,255,.25)",letterSpacing:.5,textTransform:"uppercase"}},"Серия")
+          ),
+          h("div",{style:{background:"rgba(255,255,255,.06)"}}),
+          h("div",{style:{textAlign:"center",padding:"0 4px"}},
+            h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:C.am2,marginBottom:2}},fmt(xp)+" XP"),
+            h("div",{style:{fontSize:9,fontWeight:600,color:"rgba(255,255,255,.25)",letterSpacing:.5,textTransform:"uppercase"}},"Очки")
+          ),
+          h("div",{style:{background:"rgba(255,255,255,.06)"}}),
+          h("div",{style:{textAlign:"center",padding:"0 4px"}},
+            h("div",{style:{fontFamily:F,fontSize:13,fontWeight:700,color:"#C4B5FD",marginBottom:2}},achievements.filter(a=>a.earned).length+"/"+achievements.length),
+            h("div",{style:{fontSize:9,fontWeight:600,color:"rgba(255,255,255,.25)",letterSpacing:.5,textTransform:"uppercase"}},"Значки")
+          )
+        )
+      )
+    );
+  }
+
+  return h("div",{className:"screen anim-fade"},
+    h(DarkHero,null),
+    h("div",{className:"scroll",style:{padding:"0 16px"}},
+      h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",padding:"14px 4px 10px"}},"Настройки"),
+      h("div",{className:"scard",style:{marginBottom:10}},
+        h(SettRow,{icon:"💳",bg:C.blBg,label:"Счета и бюджеты",sub:"Карта, наличные, накопления",onClick:()=>setSection("accounts")}),
+        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
+        h(SettRow,{icon:"💱",bg:C.amBg,label:"Основная валюта",sub:"UZS — Узбекский сум",tag:"UZS"}),
+        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
+        h(SettRow,{icon:"📂",bg:C.bg,label:"Категории",sub:"10 расходов · 4 дохода",onClick:()=>setShowCats(true)}),
+        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
+        h(SettRow,{icon:"🎯",bg:C.bg,label:"Бюджеты",sub:"3 активных лимита",onClick:()=>setSection("accounts")})
+      ),
+      h("div",{className:"scard",style:{marginBottom:10}},
+        h("div",{className:"srow"},
+          h("div",{className:"s-ic",style:{background:C.blBg}},"🔔"),
+          h("div",{style:{flex:1}},
+            h("div",{style:{fontSize:14,fontWeight:600,color:C.ink}},"Уведомления"),
+            h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Напоминания и инсайты")
+          ),
+          h(Toggle,{on:notifs,cb:()=>{const v=!notifs;setNotifs(v);if(onPatchUser)onPatchUser({notifs:v});}})
+        ),
+        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
+        h("div",{className:"srow"},
+          h("div",{className:"s-ic",style:{background:C.grBg}},"📊"),
+          h("div",{style:{flex:1}},
+            h("div",{style:{fontSize:14,fontWeight:600,color:C.ink}},"Еженедельный отчёт"),
+            h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Каждое воскресенье в 18:00")
+          ),
+          h(Toggle,{on:weekly,cb:()=>{const v=!weekly;setWeekly(v);if(onPatchUser)onPatchUser({weekly_report:v});}})
+        ),
+        h("div",{style:{height:1,background:C.bdr,marginLeft:50}}),
+        h(SettRow,{icon:"📤",bg:C.grBg,label:"Экспорт данных",sub:"Excel, PDF"})
+      ),
+      h("div",{className:"btn btn-red-out",style:{width:"100%",marginTop:4,fontSize:13}},"Выйти из аккаунта"),
+      h("div",{style:{textAlign:"center",padding:14,fontSize:10,fontWeight:700,color:C.ink3,letterSpacing:1.5,textTransform:"uppercase"}},"Finly v4.0 · Personal Finance"),
+      h("div",{style:{height:20}}),
+
+      // Edit profile modal
+      showEditProfile&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowEditProfile(false)}},
+        h("div",{className:"msheet"},
+          h("div",{className:"mhandle"}),
+          h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}},
+            h("div",{style:{fontFamily:F,fontSize:18,fontWeight:800,color:C.ink}},"Редактировать профиль"),
+            h("div",{onClick:()=>setShowEditProfile(false),style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
+          ),
+          h("div",{style:{display:"flex",alignItems:"center",gap:14,marginBottom:20,padding:"14px",background:C.bg,borderRadius:16}},
+            h("div",{style:{width:52,height:52,borderRadius:17,background:C.ink,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff"}},"А"),
+            h("div",{style:{flex:1}},
+              h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},"Аватар"),
+              h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Изменить начальную букву имени")
+            ),
+            h("div",{className:"btn btn-ink",style:{padding:"8px 14px",fontSize:11}},"Изменить")
+          ),
+          h("label",{className:"flabel"},"ОТОБРАЖАЕМОЕ ИМЯ"),
+          h("input",{className:"finput sm",style:{marginBottom:14},defaultValue:TG_NAME}),
+          h("label",{className:"flabel"},"TELEGRAM ID"),
+          h("input",{className:"finput sm",style:{marginBottom:14},defaultValue:"123456789",readOnly:true,style:{marginBottom:14,opacity:.6}}),
+          h("label",{className:"flabel"},"ЯЗЫК ИНТЕРФЕЙСА"),
+          h("div",{style:{display:"flex",gap:6,marginBottom:20}},
+            ["РУ","UZ","EN"].map(l=>h("div",{key:l,className:"btn "+(l==="РУ"?"btn-ink":"btn-gray"),style:{flex:1,padding:"11px",fontSize:12}},l))
+          ),
+          h("div",{style:{display:"flex",gap:10}},
+            h("div",{className:"btn btn-gray",style:{flex:1},onClick:()=>setShowEditProfile(false)},"Отмена"),
+            h("div",{className:"btn btn-ink",style:{flex:2},onClick:()=>setShowEditProfile(false)},"Сохранить")
+          )
+        )
+      ),
+      // Categories modal
+      showCats&&h("div",{className:"overlay",onClick:e=>{if(e.target===e.currentTarget)setShowCats(false)}},
+        h(CategoriesModal,{onClose:()=>setShowCats(false)})
+      )
+    )
+  );
+}
+
+/* ── APP ROOT ── */
+function App(){
+  const[loading,setLoading]=useState(true);
+  const[error,setError]=useState(null);
+  const[data,setData]=useState({
+    txs:[],drafts:[],budgets:[],
+    streak:0,xp:0,level:1,achievements:[],
+    notifs:true,weekly:false,
+    exp_cats:[...EXP_CATS],inc_cats:[...INC_CATS],
+    xp_log:[],streak_record:0,last_log_date:null
+  });
+  const[tab,setTab]=useState("home");
+  const[toast,setToast]=useState(null);
+  const[successInfo,setSuccessInfo]=useState(null);
+  const[detailTx,setDetailTx]=useState(null);
+  const[editTx,setEditTx]=useState(null);
+
+  // ── Bootstrap: load all data on open ──
+  useEffect(()=>{
+    API.auth()
+      .then(res=>{
+        setData(d=>({
+          ...d,
+          txs:          res.txs          || [],
+          drafts:       res.drafts        || [],
+          budgets:      res.budgets       || [],
+          achievements: res.achievements  || [],
+          exp_cats:     res.exp_cats      || EXP_CATS,
+          inc_cats:     res.inc_cats      || INC_CATS,
+          xp_log:       res.xp_log        || [],
+          streak:       res.user.streak,
+          streak_record:res.user.streak_record,
+          xp:           res.user.xp,
+          level:        res.user.level,
+          notifs:       res.user.notifs,
+          weekly:       res.user.weekly_report,
+          last_log_date:res.user.last_log_date,
+        }));
+        setLoading(false);
+      })
+      .catch(e=>{
+        console.error("Auth failed:",e);
+        // If no API_URL set or running outside Telegram, just show UI with empty data
+        setError(API_URL ? e.message : null);
+        setLoading(false);
+      });
+  },[]);
+
+  useEffect(()=>{if(!toast)return;const id=setTimeout(()=>setToast(null),2800);return()=>clearTimeout(id);},[toast]);
+
+  // ── Transaction handlers ──
+  async function handleSaved(tx,xp_earned,total_xp){
+    setSuccessInfo({tx,xp:xp_earned,totalXp:total_xp});
+    setData(d=>({...d,txs:[tx,...d.txs],xp:total_xp}));
+    setToast({icon:"🔥",title:"Серия × "+data.streak+"!",sub:"Запись добавлена · +"+xp_earned+" XP",pts:"+"+xp_earned});
+  }
+  async function handleDeleteTx(id){
+    try{ await API.delTx(id); }catch(e){ console.error(e); }
+    setData(d=>({...d,txs:d.txs.filter(t=>t.id!==id)}));
+    setDetailTx(null);
+  }
+  async function handleEditSave(updated){
+    try{
+      const res=await API.editTx(updated.id,{
+        type:updated.type,cat_icon:updated.cat,cat_name:updated.catName,
+        note:updated.note,amount:updated.amount,date_str:updated.dateStr,
+        time_str:updated.time,currency:updated.currency,
+        recurring:updated.recurring,account:updated.account
+      });
+      setData(d=>({...d,txs:d.txs.map(t=>t.id===res.id?res:t)}));
+    }catch(e){ console.error(e); }
+  }
+
+  // ── Draft handlers ──
+  async function handleDraftDelete(id){
+    try{ const r=await API.delDraft(id); if(r.xp_earned) setData(d=>({...d,xp:d.xp+r.xp_earned})); }
+    catch(e){ console.error(e); }
+    setData(d=>({...d,drafts:d.drafts.filter(dr=>dr.id!==id)}));
+  }
+
+  // ── Settings sync ──
+  async function handlePatchUser(patch){
+    try{ await API.patchUser(patch); }catch(e){ console.error(e); }
+    setData(d=>({...d,...patch}));
+  }
+
+  function setTabSafe(t){setTab(t);if(t!=="add")setSuccessInfo(null);}
+
+  const hasDraft=data.drafts.length>0;
+
+  // Loading screen
+  if(loading)return h("div",{id:"app",style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",flexDirection:"column",gap:16}},
+    h("div",{style:{fontSize:32}},"💰"),
+    h("div",{style:{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:800,color:"#111318"}},"Finly"),
+    h("div",{style:{fontSize:13,color:"#B0B7C3",marginTop:4}},"Загрузка...")
+  );
+
+  // Error screen (only if API_URL is set but failed)
+  if(error)return h("div",{id:"app",style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",flexDirection:"column",gap:12,padding:24}},
+    h("div",{style:{fontSize:40}},"⚠️"),
+    h("div",{style:{fontFamily:"'Syne',sans-serif",fontSize:16,fontWeight:700,color:"#111318",textAlign:"center"}},"Не удалось подключиться"),
+    h("div",{style:{fontSize:12,color:"#B0B7C3",textAlign:"center",lineHeight:1.5}},error),
+    h("div",{className:"btn btn-ink",style:{marginTop:8},onClick:()=>window.location.reload()},"Попробовать снова")
+  );
+
+  if(tab==="add"&&successInfo)return h("div",{id:"app",style:{display:"flex",flexDirection:"column",height:"100%"}},
+    h(SuccessScreen,{tx:successInfo.tx,xp:successInfo.xp,totalXp:successInfo.totalXp,onDone:()=>setSuccessInfo(null),setTab:setTabSafe})
+  );
+
+  return h("div",{id:"app"},
+    toast&&h(Toast,{toast}),
+    h("div",{style:{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}},
+      tab==="home"&&h(HomeScreen,{data,setTab:setTabSafe,onTxTap:(tx)=>setDetailTx(tx)}),
+      tab==="add"&&h(AddScreen,{data,setData,onSaved:handleSaved,setTab:setTabSafe}),
+      tab==="analytics"&&h(AnalyticsScreen,{data,onTxTap:(tx)=>setDetailTx(tx)}),
+      tab==="rewards"&&h(RewardsScreen,{data,setData}),
+      tab==="profile"&&h(ProfileScreen,{data,setData,onPatchUser:handlePatchUser})
+    ),
+    h(NavBar,{tab,setTab:setTabSafe,hasDraft}),
+    detailTx&&!editTx&&h(TxDetailModal,{tx:detailTx,onClose:()=>setDetailTx(null),onDelete:handleDeleteTx,onEdit:(tx)=>{setEditTx(tx);setDetailTx(null);}}),
+    editTx&&h(TxEditModal,{tx:editTx,onClose:()=>setEditTx(null),onSave:handleEditSave})
+  );
+}
+// Safety: ensure DOM is ready before mounting
+if (document.getElementById("app")) {
+  ReactDOM.createRoot(document.getElementById("app")).render(h(App,null));
+} else {
+  document.addEventListener("DOMContentLoaded", function() {
+    ReactDOM.createRoot(document.getElementById("app")).render(h(App,null));
+  });
+}
+</script>
+</body>
+</html>
