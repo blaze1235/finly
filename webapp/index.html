@@ -146,6 +146,45 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 </style>
   <!-- Set your Railway API URL here, or inject via build -->
   <script>window.FINLY_API_URL = "https://finly-tracker.up.railway.app";</script>
+  <script>
+  /* ── API CLIENT ── */
+  const API_URL = window.FINLY_API_URL || "";
+  const _tgInitData = window.Telegram?.WebApp?.initData || "";
+
+  async function _req(method, path, body) {
+    const opts = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Init-Data": _tgInitData,
+      },
+    };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    const res = await fetch(API_URL + path, opts);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`API ${method} ${path} → ${res.status}: ${text}`);
+    }
+    return res.json();
+  }
+
+  const API = {
+    auth:         ()          => _req("POST", "/api/auth"),
+    addTx:        (body)      => _req("POST", "/api/transactions", body),
+    editTx:       (id, body)  => _req("PUT",  `/api/transactions/${id}`, body),
+    delTx:        (id)        => _req("DELETE",`/api/transactions/${id}`),
+    addDraft:     (body)      => _req("POST", "/api/drafts", body),
+    delDraft:     (id)        => _req("DELETE",`/api/drafts/${id}`),
+    addBudget:    (body)      => _req("POST", "/api/budgets", body),
+    editBudget:   (id, body)  => _req("PUT",  `/api/budgets/${id}`, body),
+    delBudget:    (id)        => _req("DELETE",`/api/budgets/${id}`),
+    addCategory:  (body)      => _req("POST", "/api/categories", body),
+    delCategory:  (id)        => _req("DELETE",`/api/categories/${id}`),
+    patchUser:    (body)      => _req("PATCH", "/api/user", body),
+    leaderboard:  ()          => _req("GET",  "/api/leaderboard"),
+    analytics:    ()          => _req("GET",  "/api/analytics"),
+  };
+  </script>
 </head>
 <body>
 <div id="app"></div>

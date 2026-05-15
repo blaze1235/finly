@@ -78,6 +78,20 @@ if __name__ == "__main__":
     api_thread.start()
     # Give FastAPI a moment to start
     time.sleep(2)
-    log.info(f"Starting bot polling...")
-    # Use infinity_polling which handles 409 conflicts gracefully
-    bot.infinity_polling(timeout=30, long_polling_timeout=20, skip_pending=True)
+    log.info("Starting bot polling...")
+    # Drop any pending/conflicting webhook or getUpdates sessions first.
+    # This resolves the 409 Conflict error when Railway restarts the container
+    # while an old instance is still polling.
+    try:
+        bot.delete_webhook(drop_pending_updates=True)
+        log.info("Webhook cleared, pending updates dropped")
+    except Exception as e:
+        log.warning(f"Could not clear webhook: {e}")
+    time.sleep(1)
+    # infinity_polling auto-restarts on network errors
+    bot.infinity_polling(
+        timeout=30,
+        long_polling_timeout=20,
+        skip_pending=True,
+        logger_level=logging.ERROR,  # suppress repeated 409 spam in logs
+    )
