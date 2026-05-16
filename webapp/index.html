@@ -93,7 +93,7 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .srow+.srow::before{content:'';position:absolute;top:0;left:48px;right:0;height:1px;background:#ECEEF2;}
 .s-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 /* MODAL OVERLAY */
-.overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:50;display:flex;align-items:flex-end;animation:fadeIn .15s ease;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-end;animation:fadeIn .15s ease;}
 .msheet{background:#fff;border-radius:28px 28px 0 0;width:100%;padding:16px 20px 36px;animation:slideUp .2s ease;max-height:90%;}
 .mhandle{width:40px;height:4px;border-radius:2px;background:#ECEEF2;margin:0 auto 18px;}
 /* TOAST */
@@ -185,14 +185,20 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .dark .sdot.dn{background:#4ADE80;color:#111318;}
 .dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
 .dark .sdot.ms{background:#1C1C1E;color:#374151;}
-.dark .wallet{background:#0A0A0C;}
+.dark .wallet{background:#252529;}
+.dark .hero-card{background:#1C1C1E;}
 .dark .sum-card{border-color:rgba(255,255,255,.08)!important;}
-/* light-mode streak color override */
-.sdot.dn{background:#22C55E;color:#fff;}
-.sdot.td{background:rgba(34,197,94,.15);border-color:#22C55E;color:#22C55E;}
 .dark .success-wrap{background:#111318;}
 .dark .logo{color:#fff;}
 .dark .logo span{color:#fff;}
+.dark .streak-ban{background:linear-gradient(135deg,#1C1C1E,#25252A);}
+.dark .sdot.dn{background:#4ADE80;color:#111318;}
+.dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
+.dark .prof-hero{background:#0d0d11;border-bottom:1px solid rgba(255,255,255,.06);}
+.dark .rw-hero{background:linear-gradient(160deg,#12072a,#1d0a44,#111318);}
+/* Hero cards — always dark but adapt between themes */
+.hero-card{background:#111318;}
+.dark .hero-card{background:#1C1C1E;}
 </style>
   <!-- Telegram WebApp SDK must load before the API client so initData is available -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -274,6 +280,10 @@ const fmt=n=>Math.round(n).toLocaleString("ru-RU");
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
 const nowTime=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
 const dispDate=s=>{const t=today();if(s===t)return"Сегодня";const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");if(s===ys)return"Вчера";return s.slice(8)+"."+s.slice(5,7);};
+
+/* ── GLOBAL TOAST ── */
+let _setToast=null;
+function showToast(t){if(_setToast)_setToast(t);}
 
 const EXP_CATS=[
   {icon:"🛒",name:"Продукты"},{icon:"🏠",name:"Жильё"},{icon:"🚌",name:"Транспорт"},
@@ -502,7 +512,7 @@ function HomeScreen({data,setTab,onTxTap}){
   return h("div",{className:"screen anim-fade"},
     h("div",{className:"scroll",style:{padding:"8px 16px 0"}},
       // balance hero card
-      h("div",{style:{background:C.ink,borderRadius:24,padding:"20px 20px 16px",marginBottom:10,position:"relative",overflow:"hidden"}},
+      h("div",{className:"hero-card",style:{borderRadius:24,padding:"20px 20px 16px",marginBottom:10,position:"relative",overflow:"hidden"}},
         h("div",{style:{position:"absolute",top:-50,right:-50,width:150,height:150,borderRadius:"50%",background:"rgba(255,255,255,.03)"}}),
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:18,position:"relative"}},
           h("div",null,
@@ -1107,6 +1117,7 @@ function BudgetsScreen({data,setData,onBack}){
       }
     }catch(e){
       console.error(e);
+      showToast({icon:"⚠️",title:"Не удалось сохранить бюджет",sub:"Проверьте соединение"});
       if(!b.id){
         const nb={...b,id:Date.now()};
         setData(d=>({...d,budgets:[...d.budgets,nb]}));
@@ -1213,6 +1224,7 @@ function CategoriesModal({data,setData,onClose}){
       setData(d=>{const key=tabType==="expense"?"exp_cats":"inc_cats";return{...d,[key]:[...(d[key]||[]),{icon:res.icon,name:res.name,id:res.id}]};});
     }catch(e){
       console.error(e);
+      showToast({icon:"⚠️",title:"Не удалось сохранить категорию",sub:"Проверьте соединение"});
       setData(d=>{const key=tabType==="expense"?"exp_cats":"inc_cats";return{...d,[key]:[...(d[key]||[]),{icon:catIcon,name:catName.trim(),id:Date.now()}]};});
     }finally{setSaving(false);}
     setCatName("");setCatIcon("📦");setShowAdd(false);
@@ -1369,7 +1381,7 @@ function ProfileScreen({data,setData,onPatchUser,darkMode,setDarkMode}){
             h("div",{onClick:()=>setShowEditProfile(false),style:{fontSize:20,color:C.ink3,cursor:"pointer"}},"✕")
           ),
           h("div",{style:{display:"flex",alignItems:"center",gap:14,marginBottom:20,padding:"14px",background:C.bg,borderRadius:16}},
-            h("div",{style:{width:52,height:52,borderRadius:17,background:C.ink,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff"}},"А"),
+            h("div",{style:{width:52,height:52,borderRadius:17,background:"#111318",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:20,fontWeight:800,color:"#fff"}},"А"),
             h("div",{style:{flex:1}},
               h("div",{style:{fontSize:13,fontWeight:600,color:C.ink}},"Аватар"),
               h("div",{style:{fontSize:11,color:C.ink3,marginTop:2}},"Изменить начальную букву имени")
@@ -1415,6 +1427,9 @@ function App(){
   const[detailTx,setDetailTx]=useState(null);
   const[editTx,setEditTx]=useState(null);
   const[darkMode,setDarkMode]=useState(()=>{try{return localStorage.getItem("finly_dark")==="1";}catch{return false;}});
+
+  // Wire global toast
+  useEffect(()=>{_setToast=setToast;return()=>{_setToast=null;};},[setToast]);
 
   // Apply color tokens and dark class on every render
   Object.assign(C,darkMode?C_DARK:C_LIGHT);
