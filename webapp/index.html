@@ -99,8 +99,8 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 /* TOAST */
 .toast{position:absolute;top:16px;left:12px;right:12px;z-index:100;background:#1C1C1E;border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideDown .25s ease;}
 /* STREAK BANNER */
-.streak-ban{background:linear-gradient(135deg,#1C1C1E,#28282C);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;position:relative;overflow:hidden;}
-.streak-ban::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.12) 0%,transparent 70%);}
+.streak-ban{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1.5px solid rgba(245,158,11,.2);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.streak-ban::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2) 0%,transparent 70%);}
 .sdot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
 .sdot.dn{background:#F59E0B;color:#1C1C1E;}
 .sdot.td{background:rgba(245,158,11,.15);border:1.5px solid #F59E0B;color:#F59E0B;}
@@ -196,9 +196,18 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
 .dark .prof-hero{background:#0d0d11;border-bottom:1px solid rgba(255,255,255,.06);}
 .dark .rw-hero{background:linear-gradient(160deg,#12072a,#1d0a44,#111318);}
-/* Hero cards — always dark but adapt between themes */
-.hero-card{background:#111318;}
+.hero-card{background:linear-gradient(135deg,#1e1b4b,#312e81);}
 .dark .hero-card{background:#1C1C1E;}
+.dark .btn-ink{background:#fff;color:#111318;}
+.dark .btn-ink:active{background:#e5e7eb;}
+.mpill{padding:8px 16px;border-radius:999px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;background:#ECEEF2;color:#6B7280;transition:all .12s;}
+.mpill.act{background:#111318;color:#fff;}
+.dark .mpill{background:#252529;color:#9CA3AF;}
+.dark .mpill.act{background:#fff;color:#111318;}
+.cchip{display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:999px;background:#ECEEF2;font-size:11px;font-weight:700;color:#6B7280;cursor:pointer;flex-shrink:0;transition:all .12s;}
+.cchip.act{background:#111318;color:#fff;}
+.dark .cchip{background:#252529;color:#9CA3AF;}
+.dark .cchip.act{background:#fff;color:#111318;}
 </style>
   <!-- Telegram WebApp SDK must load before the API client so initData is available -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -328,9 +337,9 @@ function Streak({streak}){
   return h("div",{className:"streak-ban"},
     h("div",{style:{fontSize:32,flexShrink:0}},"🔥"),
     h("div",{style:{flex:1}},
-      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:"#fff",lineHeight:1}},
+      h("div",{style:{fontFamily:F,fontSize:22,fontWeight:800,color:C.ink,lineHeight:1}},
         h("span",{style:{color:C.am2}},streak)," дней подряд"),
-      h("div",{style:{fontSize:11,color:"#666",marginTop:2,fontWeight:600}},"Не упустите серию!"),
+      h("div",{style:{fontSize:11,color:C.ink3,marginTop:2,fontWeight:600}},"Не упустите серию!"),
       h("div",{style:{display:"flex",gap:5,marginTop:8}},
         days.map((t,i)=>h("div",{key:i,className:"sdot "+t},t==="dn"?"✓":t==="td"?"·":"·")))
     ),
@@ -549,7 +558,7 @@ function HomeScreen({data,setTab,onTxTap}){
       h("div",{style:{height:16}})
     ),
     h("div",{style:{padding:"0 16px 10px"}},
-      h("div",{className:"btn btn-ink",style:{width:"100%",fontSize:14},onClick:()=>setTab("add")},
+      h("div",{className:"btn btn-ink",style:{width:"100%",fontSize:16,padding:"18px 20px"},onClick:()=>setTab("add")},
         "+ НОВАЯ ЗАПИСЬ")
     )
   );
@@ -791,9 +800,7 @@ function AnalyticsScreen({data,onTxTap}){
     // month pills — derived from real data
     availMonths.length>0
       ?h("div",{style:{display:"flex",gap:6,overflow:"auto",padding:"0 16px 10px",flexShrink:0}},
-        availMonths.map(ym=>h("div",{key:ym,onClick:()=>selectMonth(ym),
-          style:{padding:"8px 16px",borderRadius:999,fontFamily:F,fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap",
-            background:selMonth===ym?C.ink:"#fff",color:selMonth===ym?"#fff":C.ink2,transition:"all .12s"}},
+        availMonths.map(ym=>h("div",{key:ym,onClick:()=>selectMonth(ym),className:"mpill"+(selMonth===ym?" act":"")},
           fmtMonth(ym)))
       )
       :h("div",{style:{height:6}}),
@@ -805,9 +812,7 @@ function AnalyticsScreen({data,onTxTap}){
     // category chips — only show cats matching selected type
     allCats.length>0&&h("div",{style:{display:"flex",gap:6,overflow:"auto",padding:"0 16px 10px",flexShrink:0}},
       allCats.map(name=>h("div",{key:name,onClick:()=>setSelCats(p=>p.includes(name)?p.filter(c=>c!==name):[...p,name]),
-        style:{display:"flex",alignItems:"center",gap:4,padding:"7px 12px",borderRadius:999,
-          background:selCats.includes(name)?C.ink:"#fff",fontSize:11,fontWeight:700,
-          color:selCats.includes(name)?"#fff":C.ink2,cursor:"pointer",flexShrink:0,transition:"all .12s"}},
+        className:"cchip"+(selCats.includes(name)?" act":"")},
         (catIcons[name]||"")+" "+name))
     ),
     // search
