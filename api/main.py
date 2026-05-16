@@ -230,11 +230,11 @@ def row_to_budget(r, spent: int = 0) -> dict:
 def calc_budget_spent(cur, user_id: int, budget_name: str) -> int:
     today = date.today()
     cur.execute("""
-        SELECT COALESCE(SUM(amount),0) FROM transactions
+        SELECT COALESCE(SUM(amount),0) AS total FROM transactions
         WHERE user_id=%s AND type='expense' AND cat_name=%s
           AND date_str >= date_trunc('month', CURRENT_DATE)::date
     """, (user_id, budget_name))
-    return int(cur.fetchone()[0])
+    return int(cur.fetchone()["total"])
 
 def upsert_user(conn, tg_user: dict) -> tuple[dict, bool]:
     uid = tg_user["id"]
@@ -435,8 +435,8 @@ def auth(tg_user: dict = Depends(require_user), conn=Depends(db)):
         # categories
         cur.execute("SELECT * FROM categories WHERE user_id=%s ORDER BY type, sort_order", (uid,))
         cats_raw = cur.fetchall()
-        exp_cats = [{"icon":r["icon"],"name":r["name"]} for r in cats_raw if r["type"]=="expense"]
-        inc_cats = [{"icon":r["icon"],"name":r["name"]} for r in cats_raw if r["type"]=="income"]
+        exp_cats = [{"id":r["id"],"icon":r["icon"],"name":r["name"]} for r in cats_raw if r["type"]=="expense"]
+        inc_cats = [{"id":r["id"],"icon":r["icon"],"name":r["name"]} for r in cats_raw if r["type"]=="income"]
 
         # achievements
         cur.execute("SELECT ach_id, earned_at FROM achievements WHERE user_id=%s", (uid,))
