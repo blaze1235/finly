@@ -104,7 +104,7 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .sdot{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
 .sdot.dn{background:#F59E0B;color:#1C1C1E;}
 .sdot.td{background:rgba(245,158,11,.15);border:1.5px solid #F59E0B;color:#F59E0B;}
-.sdot.ms{background:#222;color:#444;}
+.sdot.ms{background:rgba(17,19,24,.1);border:1.5px solid rgba(17,19,24,.08);color:rgba(17,19,24,.2);}
 /* TYPE ROW */
 .typerow{display:flex;gap:5px;margin-bottom:16px;background:#F4F5F7;border-radius:14px;padding:4px;}
 .typebtn{flex:1;padding:12px 6px;border-radius:11px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:#6B7280;}
@@ -184,7 +184,7 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .dark .streak-ban{background:linear-gradient(135deg,#1C1C1E,#252529);}
 .dark .sdot.dn{background:#4ADE80;color:#111318;}
 .dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
-.dark .sdot.ms{background:#1C1C1E;color:#374151;}
+.dark .sdot.ms{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.2);}
 .dark .wallet{background:#252529;}
 .dark .hero-card{background:#1C1C1E;}
 .dark .sum-card{border-color:rgba(255,255,255,.08)!important;}
@@ -196,8 +196,8 @@ textarea.finput{font-size:14px;font-family:'DM Sans',sans-serif;resize:none;heig
 .dark .sdot.td{background:rgba(74,222,128,.15);border-color:#4ADE80;color:#4ADE80;}
 .dark .prof-hero{background:#0d0d11;border-bottom:1px solid rgba(255,255,255,.06);}
 .dark .rw-hero{background:linear-gradient(160deg,#12072a,#1d0a44,#111318);}
-.hero-card{background:#111318;}
-.dark .hero-card{background:#1C1C1E;}
+.hero-card{background:#fff;border:1.5px solid rgba(17,19,24,.07);}
+.dark .hero-card{background:#1C1C1E;border-color:transparent;}
 .dark .btn-ink{background:#fff;color:#111318;}
 .dark .btn-ink:active{background:#e5e7eb;}
 .mpill{padding:8px 16px;border-radius:999px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;background:#ECEEF2;color:#6B7280;transition:all .12s;}
@@ -297,7 +297,7 @@ function showToast(t){if(_setToast)_setToast(t);}
 const EXP_CATS=[
   {icon:"🛒",name:"Продукты"},{icon:"🏠",name:"Жильё"},{icon:"🚌",name:"Транспорт"},
   {icon:"🍕",name:"Кафе"},{icon:"💊",name:"Здоровье"},{icon:"🎬",name:"Развлечения"},
-  {icon:"👕",name:"Одежда"},{icon:"📚",name:"Образование"},{icon:"🤷",name:"Забыл"},{icon:"•••",name:"Прочее"},
+  {icon:"👕",name:"Одежда"},{icon:"📚",name:"Образование"},{icon:"🤷",name:"Забыл"},{icon:"📦",name:"Прочее"},
 ];
 const INC_CATS=[
   {icon:"💼",name:"Зарплата"},{icon:"💹",name:"Подработка"},{icon:"🏦",name:"Инвестиции"},{icon:"🎁",name:"Подарок"},
@@ -348,8 +348,8 @@ function Streak({streak}){
 }
 function NavBar({tab,setTab,hasDraft}){
   const items=[
-    {id:"home",icon:"⊞",label:"Главная"},
-    {id:"add",icon:"＋",label:"Запись"},
+    {id:"home",icon:"🏠",label:"Главная"},
+    {id:"add",icon:"✚",label:"Запись"},
     {id:"analytics",icon:"📊",label:"Отчёты"},
     {id:"rewards",icon:"🏆",label:"Прогресс"},
     {id:"profile",icon:"👤",label:"Профиль"},
@@ -522,19 +522,18 @@ function HomeScreen({data,setTab,onTxTap}){
     h("div",{className:"scroll",style:{padding:"8px 16px 0"}},
       // balance hero card
       h("div",{className:"hero-card",style:{borderRadius:24,padding:"20px 20px 16px",marginBottom:10,position:"relative",overflow:"hidden"}},
-        h("div",{style:{position:"absolute",top:-50,right:-50,width:150,height:150,borderRadius:"50%",background:"rgba(255,255,255,.03)"}}),
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:18,position:"relative"}},
           h("div",null,
-            h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:3}},greet.toUpperCase()),
-            h("div",{style:{fontSize:17,fontWeight:700,color:"#fff"}},TG_NAME),
-            h("div",{style:{fontSize:11,color:"rgba(255,255,255,.3)",marginTop:1}},days[d.getDay()]+", "+d.getDate()+" "+mons[d.getMonth()])
+            h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:3}},greet.toUpperCase()),
+            h("div",{style:{fontSize:17,fontWeight:700,color:C.ink}},TG_NAME),
+            h("div",{style:{fontSize:11,color:C.ink3,marginTop:1}},days[d.getDay()]+", "+d.getDate()+" "+mons[d.getMonth()])
           ),
-          h("div",{style:{width:42,height:42,borderRadius:14,background:"rgba(255,255,255,.1)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,flexShrink:0}},TG_INITIAL)
+          h("div",{style:{width:42,height:42,borderRadius:14,background:C.ink,color:C.bg,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:F,fontSize:16,fontWeight:800,flexShrink:0}},TG_INITIAL)
         ),
         h("div",{style:{marginBottom:18,position:"relative"}},
-          h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.3)",letterSpacing:2,textTransform:"uppercase",marginBottom:5}},"ОБЩИЙ БАЛАНС"),
-          h("div",{style:{fontFamily:F,fontSize:38,fontWeight:800,color:"#fff",lineHeight:1.1}},fmt(Math.abs(balance))),
-          h("div",{style:{fontSize:12,color:"rgba(255,255,255,.35)",marginTop:4}},(balance<0?"−  ":"")+"сум")
+          h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:5}},"ОБЩИЙ БАЛАНС"),
+          h("div",{style:{fontFamily:F,fontSize:38,fontWeight:800,color:C.ink,lineHeight:1.1}},fmt(Math.abs(balance))),
+          h("div",{style:{fontSize:12,color:C.ink3,marginTop:4}},(balance<0?"−  ":"")+"сум")
         ),
         h("div",{style:{display:"flex",gap:8,position:"relative"}},
           h("div",{style:{flex:1,background:"rgba(74,222,128,.1)",borderRadius:14,padding:"12px 14px"}},
@@ -1240,7 +1239,7 @@ function CategoriesModal({data,setData,onClose}){
   const[catName,setCatName]=useState("");
   const[catIcon,setCatIcon]=useState("📦");
   const[saving,setSaving]=useState(false);
-  const allIcons=["💡","🚗","🛒","📱","🎮","✈️","🔧","🏥","🎓","🏋️","💻","🎵","🍰","🌿","🐶","📦","🏠","🚌","🍕","💊","🎬","👕","📚","🤷"];
+  const allIcons=["🛒","🏠","🚗","☕","🍕","💊","🎮","✈️","👕","📚","💻","📱","🎬","🎵","🏋️","🌿","🐕","💡","🔧","🏥","🎓","🎁","💼","📈","🛍️","🍜","🚲","⚽","🎸","🏖️","💈","📦","🤷","🎭","💇"];
   const cats=tabType==="expense"?(data.exp_cats||EXP_CATS):(data.inc_cats||INC_CATS);
 
   async function addCat(){
