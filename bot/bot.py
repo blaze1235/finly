@@ -2,7 +2,10 @@ import os, logging, threading, time, hmac, hashlib, json, urllib.parse
 import datetime
 import requests
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from telebot.types import (
+    InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo,
+    ReplyKeyboardMarkup, KeyboardButton,
+)
 import psycopg2
 import psycopg2.extras
 
@@ -80,6 +83,13 @@ def api(method: str, path: str, tg_user, body=None):
 
 # ── Keyboards ─────────────────────────────────────────────────────────────────
 
+def shortcut_kb():
+    """Persistent reply keyboard shown below the text input."""
+    kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    kb.row(KeyboardButton("➕ Доход"), KeyboardButton("➖ Расход"))
+    kb.row(KeyboardButton("📊 Отчёт"), KeyboardButton("💰 Баланс"))
+    return kb
+
 def main_kb():
     kb = InlineKeyboardMarkup()
     kb.add(InlineKeyboardButton("💰 Открыть Finly", web_app=WebAppInfo(url=WEBAPP_URL)))
@@ -144,7 +154,28 @@ def cmd_start(message):
             f"🔥 Серия: *{user['streak']}* дн.  ·  ⭐ *{user['xp']}* XP  ·  🏅 Ур. *{user['level']}*\n\n"
             f"Что делаем?"
         )
-    bot.send_message(message.chat.id, text, reply_markup=main_kb())
+    bot.send_message(message.chat.id, text, reply_markup=shortcut_kb())
+    bot.send_message(message.chat.id, "Выберите действие:", reply_markup=main_kb())
+
+# ── Shortcut keyboard button handlers ────────────────────────────────────────
+
+@bot.message_handler(func=lambda m: m.text == "➕ Доход")
+def btn_income(message):
+    _state[message.from_user.id] = {"step": "amount", "data": {"type": "income"}}
+    bot.send_message(message.chat.id, "💵 *Доход*\n\nВведите сумму (в сумах):")
+
+@bot.message_handler(func=lambda m: m.text == "➖ Расход")
+def btn_expense(message):
+    _state[message.from_user.id] = {"step": "amount", "data": {"type": "expense"}}
+    bot.send_message(message.chat.id, "💸 *Расход*\n\nВведите сумму (в сумах):")
+
+@bot.message_handler(func=lambda m: m.text == "📊 Отчёт")
+def btn_report(message):
+    _show_recent(message.chat.id, message.from_user)
+
+@bot.message_handler(func=lambda m: m.text == "💰 Баланс")
+def btn_balance_kb(message):
+    _show_balance(message.chat.id, message.from_user)
 
 @bot.message_handler(commands=["add", "новая", "добавить"])
 def cmd_add(message):
