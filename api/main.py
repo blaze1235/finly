@@ -13,6 +13,7 @@ import psycopg2
 import psycopg2.extras
 from fastapi import FastAPI, HTTPException, Header, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 # ── Config ────────────────────────────────────────────────────────────────────
@@ -401,6 +402,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Webapp ────────────────────────────────────────────────────────────────────
+_WEBAPP_HTML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "webapp", "index.html")
+
+@app.get("/")
+def serve_webapp():
+    return FileResponse(_WEBAPP_HTML, media_type="text/html")
 
 # ── Health ────────────────────────────────────────────────────────────────────
 @app.get("/api/health")

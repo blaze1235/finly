@@ -6,6 +6,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY bot/ .
 COPY api/ ./api/
+COPY webapp/ ./webapp/
 RUN touch api/__init__.py
 
 # Railway injects PORT automatically; we read it in bot.py
