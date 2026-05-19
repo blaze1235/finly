@@ -150,6 +150,8 @@ ALL_ACHIEVEMENTS = [
 ]
 
 def init_db():
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL environment variable is not set")
     conn = get_conn()
     with conn:
         with conn.cursor() as cur:

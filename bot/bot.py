@@ -445,16 +445,10 @@ def _show_budgets(chat_id, tg_user):
 
 # ── Startup ───────────────────────────────────────────────────────────────────
 
-def start_api():
-    import uvicorn
-    log.info(f"Starting FastAPI on port {API_PORT}")
-    uvicorn.run("api.main:app", host="0.0.0.0", port=API_PORT, log_level="info")
-
-if __name__ == "__main__":
-    api_thread = threading.Thread(target=start_api, daemon=True)
-    api_thread.start()
-    time.sleep(2)
-
+def run_bot():
+    if not BOT_TOKEN:
+        log.error("BOT_TOKEN is not set — bot polling disabled")
+        return
     log.info("Starting bot polling...")
     try:
         bot.delete_webhook(drop_pending_updates=True)
@@ -462,11 +456,33 @@ if __name__ == "__main__":
     except Exception as e:
         log.warning(f"Could not clear webhook: {e}")
 
+    # Retry loop so a transient error doesn't kill the thread permanently.
     # Do NOT use skip_pending=True — it calls __skip_updates() before the retry
     # loop starts, so a 409 from an overlapping Railway instance crashes the
     # whole process instead of being caught and retried.
-    bot.infinity_polling(
-        timeout=30,
-        long_polling_timeout=20,
-        logger_level=logging.ERROR,
-    )
+    while True:
+        try:
+            bot.infinity_polling(
+                timeout=30,
+                long_polling_timeout=20,
+                logger_level=logging.ERROR,
+            )
+        except Exception as e:
+            log.error(f"Bot polling crashed: {e}. Retrying in 10s...")
+            time.sleep(10)
+
+if __name__ == "__main__":
+    if not BOT_TOKEN:
+        log.warning("BOT_TOKEN is not set — bot will not start")
+    if not DATABASE_URL:
+        log.error("DATABASE_URL is not set — API will fail to start")
+
+    # Bot runs in a background daemon thread. If it crashes and retries, the
+    # API (uvicorn, main thread) keeps serving. Railway's health probe hits the
+    # API, so the process stays alive and Railway won't force-restart it.
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
+    bot_thread.start()
+
+    import uvicorn
+    log.info(f"Starting FastAPI on port {API_PORT}")
+    uvicorn.run("api.main:app", host="0.0.0.0", port=API_PORT, log_level="info")
