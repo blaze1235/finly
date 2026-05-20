@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Finly – Аналитика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1080px; height: 1350px;
+    overflow: hidden; font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1240 50%, #0d0d20 100%);
+  }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px); }
+  .orb-blue { width: 400px; height: 400px; top: -60px; right: -60px; background: rgba(37,99,235,0.13); }
+  .orb-green { width: 360px; height: 360px; bottom: -60px; left: -60px; background: rgba(22,163,74,0.11); }
+  .brand-above {
+    font-family: 'Syne', sans-serif; font-size: 60px; font-weight: 800;
+    color: #fff; letter-spacing: -2px; margin-bottom: 28px; z-index: 10;
+  }
+  .brand-below {
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 400;
+    color: rgba(255,255,255,0.5); margin-top: 28px; z-index: 10;
+  }
+  .phone {
+    width: 360px; height: 780px; background: #1a1a1e; border-radius: 52px;
+    box-shadow: 0 0 0 1.5px #3a3a3c, 0 0 0 3px #1a1a1e, 0 50px 100px rgba(0,0,0,.8), inset 0 0 0 1px #2c2c2e;
+    position: relative; flex-shrink: 0; z-index: 10;
+  }
+  .phone::before {
+    content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 28px; background: #1a1a1e; border-radius: 20px; z-index: 10;
+  }
+  .phone::after {
+    content: ''; position: absolute; right: -3px; top: 200px;
+    width: 3px; height: 70px; background: #3a3a3c; border-radius: 0 2px 2px 0;
+    box-shadow: 0 -90px 0 #3a3a3c, 0 100px 0 #3a3a3c;
+  }
+  .phone-screen { position: absolute; inset: 13px; border-radius: 40px; overflow: hidden; background: #F4F5F7; }
+  .app-wrap { width: 390px; height: 844px; transform: scale(0.856); transform-origin: top left; background: #F4F5F7; overflow: hidden; }
+  .status-bar {
+    display: flex; justify-content: space-between; padding: 14px 22px 4px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: #111318; background: #F4F5F7;
+  }
+  .cat-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cat-label { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #111318; width: 76px; flex-shrink: 0; white-space: nowrap; }
+  .cat-bar-bg { flex: 1; height: 7px; background: #F4F5F7; border-radius: 4px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 4px; }
+  .cat-amount { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: #111318; width: 54px; text-align: right; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="orb orb-blue"></div>
+  <div class="orb orb-green"></div>
+
+  <div class="brand-above">Finly.</div>
+
+  <div class="phone">
+    <div class="phone-screen">
+      <div class="app-wrap">
+
+        <div class="status-bar">
+          <span>9:41</span><span>●●●● WiFi 🔋</span>
+        </div>
+
+        <!-- Title -->
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111318;padding:6px 20px 12px;">Аналитика</div>
+
+        <!-- Month pills -->
+        <div style="padding:0 16px 10px;display:flex;gap:8px;">
+          <div style="background:#111318;color:#fff;border-radius:20px;padding:8px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;">Май 2026</div>
+          <div style="background:#fff;color:#6B7280;border-radius:20px;padding:8px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;">Апр 2026</div>
+        </div>
+
+        <!-- Filter pills -->
+        <div style="padding:0 16px 10px;display:flex;gap:8px;">
+          <div style="background:#fff;color:#6B7280;border-radius:20px;padding:7px 14px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;">Все</div>
+          <div style="background:#111318;color:#fff;border-radius:20px;padding:7px 14px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;">Расходы</div>
+          <div style="background:#fff;color:#6B7280;border-radius:20px;padding:7px 14px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;">Доходы</div>
+        </div>
+
+        <!-- KPI row card -->
+        <div style="background:#fff;border-radius:18px;margin:0 16px 10px;display:flex;align-items:center;">
+          <div style="flex:1;padding:14px 12px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#DC2626;line-height:1;margin-bottom:3px;">902 000</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#B0B7C3;letter-spacing:1px;text-transform:uppercase;">Расходы</div>
+          </div>
+          <div style="width:1px;height:36px;background:#ECEEF2;"></div>
+          <div style="flex:1;padding:14px 12px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#111318;line-height:1;margin-bottom:3px;">6</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#B0B7C3;letter-spacing:1px;text-transform:uppercase;">Операций</div>
+          </div>
+          <div style="width:1px;height:36px;background:#ECEEF2;"></div>
+          <div style="flex:1;padding:14px 12px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#16A34A;line-height:1;margin-bottom:3px;">4 000 000</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#B0B7C3;letter-spacing:1px;text-transform:uppercase;">Доход</div>
+          </div>
+        </div>
+
+        <!-- Categories card -->
+        <div style="background:#fff;border-radius:18px;margin:0 16px 10px;padding:16px;">
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#111318;margin-bottom:12px;">По категориям</div>
+
+          <div class="cat-row">
+            <div style="font-size:14px;width:20px;flex-shrink:0;">🏠</div>
+            <div class="cat-label">Жильё</div>
+            <div class="cat-bar-bg">
+              <div class="cat-bar-fill" style="width:100%;background:#DC2626;"></div>
+            </div>
+            <div class="cat-amount">800 000</div>
+          </div>
+
+          <div class="cat-row">
+            <div style="font-size:14px;width:20px;flex-shrink:0;">🛒</div>
+            <div class="cat-label">Продукты</div>
+            <div class="cat-bar-bg">
+              <div class="cat-bar-fill" style="width:28%;background:#FCA5A5;"></div>
+            </div>
+            <div class="cat-amount">45 000</div>
+          </div>
+
+          <div class="cat-row">
+            <div style="font-size:14px;width:20px;flex-shrink:0;">🚌</div>
+            <div class="cat-label">Транспорт</div>
+            <div class="cat-bar-bg">
+              <div class="cat-bar-fill" style="width:15%;background:#FCA5A5;opacity:0.7;"></div>
+            </div>
+            <div class="cat-amount">22 000</div>
+          </div>
+
+          <div class="cat-row" style="margin-bottom:0;">
+            <div style="font-size:14px;width:20px;flex-shrink:0;">🍕</div>
+            <div class="cat-label">Кафе</div>
+            <div class="cat-bar-bg">
+              <div class="cat-bar-fill" style="width:22%;background:#FECACA;"></div>
+            </div>
+            <div class="cat-amount">35 000</div>
+          </div>
+        </div>
+
+        <!-- Transactions heading -->
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#111318;padding:4px 16px 8px;">Операции (6)</div>
+
+        <!-- Transaction 1 -->
+        <div style="background:#fff;border-radius:18px;padding:12px 16px;margin:0 16px 7px;display:flex;align-items:center;gap:12px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:#FEF2F2;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏠</div>
+          <div style="flex:1;">
+            <div style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#111318;margin-bottom:1px;">Аренда квартиры</div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:#6B7280;">Жильё · 01.05 · 09:00</div>
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#111318;">−800 000</div>
+        </div>
+
+        <!-- Transaction 2 -->
+        <div style="background:#fff;border-radius:18px;padding:12px 16px;margin:0 16px 7px;display:flex;align-items:center;gap:12px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:#FEF2F2;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🛒</div>
+          <div style="flex:1;">
+            <div style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#111318;margin-bottom:1px;">Продукты</div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:#6B7280;">Магнит · 20.05 · 10:15</div>
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#111318;">−45 000</div>
+        </div>
+
+        <!-- Nav bar -->
+        <div style="background:#fff;padding:6px 4px 18px;display:flex;align-items:center;justify-content:space-around;border-top:1px solid #ECEEF2;margin-top:4px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">⊞</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Главная</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">＋</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Запись</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;background:#F4F5F7;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">📊</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#111318;text-transform:uppercase;letter-spacing:0.5px;">Отчёты</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">🏆</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Прогресс</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">👤</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Профиль</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="brand-below">Полный контроль над расходами</div>
+</body>
+</html>
