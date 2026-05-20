@@ -3,61 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Finly · Главная</title>
+<title>Finly – Главная</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    width: 1080px; height: 1350px; overflow: hidden;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a1240 50%, #0d0d20 100%);
-    display: flex; align-items: center; justify-content: center;
+    width: 1080px; height: 1350px;
+    overflow: hidden;
     font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1240 50%, #0d0d20 100%);
   }
-  /* Decorative orbs */
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
   .orb {
-    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
   }
   .orb-amber {
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
-    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    top: -80px; right: -60px;
+    background: rgba(245,158,11,0.12);
   }
   .orb-blue {
-    width: 420px; height: 420px;
-    background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+    width: 380px; height: 380px;
     bottom: -60px; left: -60px;
+    background: rgba(37,99,235,0.12);
   }
-  /* Canvas layout */
-  .canvas {
-    width: 1080px; height: 1350px;
-    position: relative;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 0;
-  }
-  .brand-top {
+  .brand-above {
     font-family: 'Syne', sans-serif;
     font-size: 60px; font-weight: 800;
-    color: #fff; letter-spacing: -2px;
-    margin-bottom: 28px;
-    position: relative; z-index: 2;
+    color: #ffffff; letter-spacing: -2px;
+    margin-bottom: 28px; z-index: 10;
   }
-  .brand-bottom {
+  .brand-below {
     font-family: 'DM Sans', sans-serif;
     font-size: 16px; font-weight: 400;
     color: rgba(255,255,255,0.5);
-    margin-top: 24px;
-    position: relative; z-index: 2;
+    margin-top: 28px; z-index: 10;
   }
-  /* Phone mockup */
   .phone {
     width: 360px; height: 780px;
     background: #1a1a1e;
     border-radius: 52px;
     box-shadow: 0 0 0 1.5px #3a3a3c, 0 0 0 3px #1a1a1e, 0 50px 100px rgba(0,0,0,.8), inset 0 0 0 1px #2c2c2e;
-    position: relative; flex-shrink: 0;
-    z-index: 2;
+    position: relative; flex-shrink: 0; z-index: 10;
   }
   .phone::before {
     content: ''; position: absolute;
@@ -74,147 +71,133 @@
   }
   .phone-screen {
     position: absolute; inset: 13px;
-    border-radius: 40px; overflow: hidden;
-    background: #F4F5F7;
+    border-radius: 40px; overflow: hidden; background: #F4F5F7;
   }
   .app-wrap {
     width: 390px; height: 844px;
     transform: scale(0.856); transform-origin: top left;
-    background: #F4F5F7;
-    overflow: hidden;
+    background: #F4F5F7; overflow: hidden;
+  }
+  .status-bar {
+    display: flex; justify-content: space-between;
+    padding: 14px 22px 4px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    color: #111318; background: #F4F5F7;
   }
 </style>
 </head>
 <body>
-<div class="canvas">
   <div class="orb orb-amber"></div>
   <div class="orb orb-blue"></div>
 
-  <div class="brand-top">Finly.</div>
+  <div class="brand-above">Finly.</div>
 
   <div class="phone">
     <div class="phone-screen">
       <div class="app-wrap">
 
-        <!-- Status Bar -->
-        <div style="display:flex;justify-content:space-between;padding:14px 22px 4px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#111318;background:#F4F5F7">
+        <div class="status-bar">
           <span>9:41</span><span>●●●● WiFi 🔋</span>
         </div>
 
-        <!-- Dark Balance Hero Card -->
+        <!-- Balance hero card -->
         <div style="background:#111318;border-radius:24px;padding:20px;margin:8px 16px;">
-          <!-- Top row -->
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
             <div>
               <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#F59E0B;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">ДОБРОЕ УТРО</div>
               <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:2px;">Абдулазиз</div>
-              <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.35);">Среда, 20 мая</div>
+              <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);">Среда, 20 мая</div>
             </div>
-            <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;">А</div>
+            <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;">А</div>
           </div>
-          <!-- Balance -->
-          <div style="margin-bottom:14px;">
-            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">ОБЩИЙ БАЛАНС</div>
-            <div style="display:flex;align-items:baseline;gap:6px;">
-              <span style="font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#fff;line-height:1;">3 098 000</span>
-              <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,.4);">сум</span>
-            </div>
-          </div>
-          <!-- Income / Expense pills -->
+          <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">ОБЩИЙ БАЛАНС</div>
+          <div style="font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#fff;line-height:1;">3 098 000</div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;margin-bottom:16px;">сум</div>
           <div style="display:flex;gap:10px;">
-            <div style="flex:1;background:rgba(74,222,128,.1);border-radius:14px;padding:10px 14px;">
-              <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(74,222,128,.6);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;">ДОХОД</div>
-              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#4ADE80;">4 000 000</div>
+            <div style="flex:1;background:rgba(74,222,128,0.1);border-radius:14px;padding:10px 12px;">
+              <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(74,222,128,0.6);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px;">ДОХОД</div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#4ADE80;line-height:1;">4 000 000</div>
             </div>
-            <div style="flex:1;background:rgba(248,113,113,.1);border-radius:14px;padding:10px 14px;">
-              <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(248,113,113,.6);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;">РАСХОД</div>
-              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#F87171;">902 000</div>
+            <div style="flex:1;background:rgba(248,113,113,0.1);border-radius:14px;padding:10px 12px;">
+              <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:rgba(248,113,113,0.6);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px;">РАСХОД</div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#F87171;line-height:1;">902 000</div>
             </div>
           </div>
         </div>
 
-        <!-- Streak Banner -->
-        <div style="background:#1C1C1E;border-radius:20px;margin:10px 16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;align-items:center;gap:12px;flex:1;">
-            <span style="font-size:32px;line-height:1;">🔥</span>
-            <div style="flex:1;">
-              <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px;">
-                <span style="color:#F59E0B;">14</span> дней подряд
-              </div>
-              <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px;">Не упустите серию!</div>
-              <div style="display:flex;gap:5px;">
-                <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:rgba(245,158,11,.25);"></div>
-                <div style="width:10px;height:10px;border-radius:50%;background:rgba(245,158,11,.25);"></div>
-              </div>
+        <!-- Streak banner -->
+        <div style="background:#1C1C1E;border-radius:20px;margin:10px 16px;padding:14px 16px;display:flex;align-items:center;gap:10px;">
+          <div style="font-size:32px;line-height:1;flex-shrink:0;">🔥</div>
+          <div style="flex:1;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px;"><span style="color:#F59E0B;">14</span> дней подряд</div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Не упустите серию!</div>
+            <div style="display:flex;gap:4px;">
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
+              <div style="width:20px;height:6px;border-radius:3px;background:#F59E0B;"></div>
             </div>
           </div>
-          <div style="background:rgba(245,158,11,.15);border-radius:10px;padding:6px 10px;margin-left:10px;">
-            <span style="font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:#F59E0B;text-transform:uppercase;letter-spacing:1px;">+20 XP</span>
-          </div>
+          <div style="background:rgba(245,158,11,0.15);color:#F59E0B;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:6px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;">+20 XP</div>
         </div>
 
-        <!-- Section Header -->
+        <!-- Section header -->
         <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#111318;padding:6px 16px 8px;">Последнее</div>
 
         <!-- Transaction 1 -->
         <div style="background:#fff;border-radius:18px;padding:14px 16px;margin:0 16px 8px;display:flex;align-items:center;gap:12px;">
-          <div style="width:44px;height:44px;border-radius:14px;background:#FEF2F2;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🛒</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:#111318;margin-bottom:2px;">Продукты</div>
+          <div style="width:42px;height:42px;border-radius:12px;background:#FEF2F2;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🛒</div>
+          <div style="flex:1;">
+            <div style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#111318;margin-bottom:2px;">Продукты</div>
             <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6B7280;">Магнит · Сегодня · 10:15</div>
           </div>
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#111318;flex-shrink:0;">−45 000</div>
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#111318;">−45 000</div>
         </div>
 
         <!-- Transaction 2 -->
         <div style="background:#fff;border-radius:18px;padding:14px 16px;margin:0 16px 8px;display:flex;align-items:center;gap:12px;">
-          <div style="width:44px;height:44px;border-radius:14px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💼</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:#111318;margin-bottom:2px;">Зарплата</div>
+          <div style="width:42px;height:42px;border-radius:12px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💼</div>
+          <div style="flex:1;">
+            <div style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#111318;margin-bottom:2px;">Зарплата</div>
             <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6B7280;">Май 2026 · 15.05 · 09:00</div>
           </div>
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#16A34A;flex-shrink:0;">+3 500 000</div>
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#16A34A;">+3 500 000</div>
         </div>
 
-        <!-- Add Button -->
-        <div style="background:#111318;border-radius:16px;padding:16px;margin:4px 16px 14px;text-align:center;">
-          <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;">+ НОВАЯ ЗАПИСЬ</span>
+        <!-- Add button -->
+        <div style="background:#111318;border-radius:16px;padding:16px;margin:0 16px 14px;text-align:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;">+ НОВАЯ ЗАПИСЬ</div>
+
+        <!-- Nav bar -->
+        <div style="background:#fff;padding:6px 4px 18px;display:flex;align-items:center;justify-content:space-around;border-top:1px solid #ECEEF2;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;background:#F4F5F7;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">⊞</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#111318;text-transform:uppercase;letter-spacing:0.5px;">Главная</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">＋</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Запись</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">📊</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Отчёты</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">🏆</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Прогресс</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;min-width:60px;">
+            <div style="font-size:20px;line-height:1;">👤</div>
+            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;">Профиль</div>
+          </div>
         </div>
 
-        <!-- Nav Bar -->
-        <div style="background:#fff;padding:6px 4px 18px;display:flex;align-items:center;border-top:1px solid #ECEEF2;">
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:#F4F5F7;border-radius:12px;padding:8px 4px;margin:0 2px;">
-            <span style="font-size:18px;">⊞</span>
-            <span style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#111318;">Главная</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;">
-            <span style="font-size:18px;">➕</span>
-            <span style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;">Запись</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;">
-            <span style="font-size:18px;">📊</span>
-            <span style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;">Отчёты</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;">
-            <span style="font-size:18px;">🏆</span>
-            <span style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;">Прогресс</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;">
-            <span style="font-size:18px;">👤</span>
-            <span style="font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:#6B7280;">Профиль</span>
-          </div>
-        </div>
+      </div>
+    </div>
+  </div>
 
-      </div><!-- app-wrap -->
-    </div><!-- phone-screen -->
-  </div><!-- phone -->
-
-  <div class="brand-bottom">Умный учёт финансов · Telegram Mini App</div>
-</div><!-- canvas -->
+  <div class="brand-below">Умный учёт финансов · Telegram Mini App</div>
 </body>
 </html>
