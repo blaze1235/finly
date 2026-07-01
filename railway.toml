@@ -5,3 +5,9 @@ dockerfilePath = "Dockerfile"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 startCommand = "python bot.py"
+
+# ── Safety: always deploy to the app service, never to the database ───────────
+# Run deploys with: railway up --service finly
+# NEVER run: railway up  (without --service flag, risks wrong service target)
+[service]
+name = "finly"
