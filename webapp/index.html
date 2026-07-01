@@ -2649,6 +2649,13 @@ function DonateScreen({onBack}){
   const[reportAmount,setReportAmount]=useState("");
   const[reportNote,setReportNote]=useState("");
   const[saving,setSaving]=useState(false);
+  const[copied,setCopied]=useState("");
+
+  function copyText(text,key){
+    navigator.clipboard?.writeText(text).then(()=>{setCopied(key);setTimeout(()=>setCopied(""),2000);}).catch(()=>{
+      setCopied(key);setTimeout(()=>setCopied(""),2000);
+    });
+  }
 
   function load(){
     Promise.all([
@@ -2722,6 +2729,43 @@ function DonateScreen({onBack}){
         )
       ),
 
+      // How to donate — step 1: numbered mini-guide
+      h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:C.ink3,letterSpacing:2,textTransform:"uppercase",marginBottom:10}},"КАК ПОЖЕРТВОВАТЬ"),
+      h("div",{style:{display:"flex",gap:10,marginBottom:14}},
+        [["1","Скопируй номер карты ниже"],["2","Переведи любую сумму через свой банк"],["3","Нажми «Я оплатил(а)» — готово"]].map(([n,t])=>
+          h("div",{key:n,style:{flex:1,background:C.card,border:"1px solid "+C.bdr,borderRadius:14,padding:"12px 10px"}},
+            h("div",{style:{width:22,height:22,borderRadius:"50%",background:"#D4537E",color:"#fff",fontFamily:F,fontSize:11,fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:8}},n),
+            h("div",{style:{fontSize:11,color:C.ink2,lineHeight:1.4}},t)
+          )
+        )
+      ),
+
+      // Payment card — big, bold, tap-to-copy
+      DONATE_INFO.card&&h("div",{style:{borderRadius:20,padding:"20px",marginBottom:14,background:"linear-gradient(135deg,#1E1E2E,#302B4A)",position:"relative",overflow:"hidden"}},
+        h("div",{style:{position:"absolute",top:-24,right:-24,width:130,height:130,borderRadius:"50%",background:"rgba(255,255,255,0.05)"}}),
+        h("div",{style:{position:"relative",zIndex:1}},
+          h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+            h("div",{style:{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.55)",letterSpacing:1.5,textTransform:"uppercase"}},"💜 Карта для донатов"),
+            h("div",{style:{fontSize:20}},"🏦")
+          ),
+          h("div",{onClick:()=>copyText(DONATE_INFO.card.replace(/\s/g,""),"card"),
+            style:{fontFamily:"'Courier New',monospace",fontSize:24,fontWeight:700,color:"#fff",letterSpacing:2,marginBottom:6,cursor:"pointer",userSelect:"all"}},
+            DONATE_INFO.card),
+          DONATE_INFO.cardHolder&&h("div",{style:{fontSize:12,color:"rgba(255,255,255,0.6)",letterSpacing:0.5,marginBottom:16}},DONATE_INFO.cardHolder),
+          h("div",{onClick:()=>copyText(DONATE_INFO.card.replace(/\s/g,""),"card"),
+            style:{textAlign:"center",padding:"12px",borderRadius:14,background:copied==="card"?"#639922":"rgba(255,255,255,0.12)",fontFamily:F,fontSize:14,fontWeight:800,color:"#fff",cursor:"pointer",transition:"background .2s"}},
+            copied==="card"?"✓ Скопировано":"📋 Скопировать номер карты"),
+          (DONATE_INFO.click||DONATE_INFO.payme)&&h("div",{style:{display:"flex",gap:8,marginTop:10}},
+            DONATE_INFO.click&&h("div",{onClick:()=>copyText(DONATE_INFO.click,"click"),
+              style:{flex:1,textAlign:"center",padding:"9px",borderRadius:12,background:"rgba(255,255,255,0.08)",fontFamily:F,fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.85)",cursor:"pointer"}},
+              copied==="click"?"✓ Скопировано":"Click: "+DONATE_INFO.click),
+            DONATE_INFO.payme&&h("div",{onClick:()=>copyText(DONATE_INFO.payme,"payme"),
+              style:{flex:1,textAlign:"center",padding:"9px",borderRadius:12,background:"rgba(255,255,255,0.08)",fontFamily:F,fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.85)",cursor:"pointer"}},
+              copied==="payme"?"✓ Скопировано":"Payme: "+DONATE_INFO.payme)
+          )
+        )
+      ),
+
       // My pledge / status card
       h("div",{className:"card",style:{marginBottom:14,padding:"16px"}},
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}},
@@ -2744,17 +2788,6 @@ function DonateScreen({onBack}){
         ),
         h("div",{className:"btn btn-ink",style:{width:"100%",background:"#D4537E"},onClick:()=>{setReportAmount(String(me?.pledge_amount||""));setShowReport(true);}},
           "💜 Я оплатил(а)")
-      ),
-
-      // Payment instructions
-      h("div",{style:{background:C.card,border:"1px solid "+C.bdr,borderRadius:16,padding:"14px",marginBottom:14}},
-        h("div",{style:{fontFamily:F,fontSize:12,fontWeight:800,color:C.ink,marginBottom:8}},"Как оплатить"),
-        h("div",{style:{fontSize:12,color:C.ink2,lineHeight:1.6,marginBottom:8}},
-          "Переведи любую сумму напрямую и отметь платёж кнопкой выше — всё уходит на благотворительность."),
-        DONATE_INFO.card&&h("div",{style:{fontSize:12,color:C.ink2,marginBottom:DONATE_INFO.cardHolder?2:0}},"💳 Карта: ",h("b",{style:{color:C.ink,fontFamily:"'Courier New',monospace"}},DONATE_INFO.card)),
-        DONATE_INFO.cardHolder&&h("div",{style:{fontSize:11,color:C.ink3,marginBottom:8}},DONATE_INFO.cardHolder),
-        DONATE_INFO.click&&h("div",{style:{fontSize:12,color:C.ink2}},"Click: ",h("b",{style:{color:C.ink}},DONATE_INFO.click)),
-        DONATE_INFO.payme&&h("div",{style:{fontSize:12,color:C.ink2}},"Payme: ",h("b",{style:{color:C.ink}},DONATE_INFO.payme))
       ),
 
       // Top donors
