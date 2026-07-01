@@ -235,10 +235,9 @@ body.modal-open{overflow:hidden;position:fixed;width:100%;}
   <script>
   window.FINLY_API_URL = "https://finly-tracker.up.railway.app";
   window.FINLY_BOT_USERNAME = "finlytracker_bot";
-  // TODO: fill in your real payout details before donations go live —
-  // shown to users as "where to send the money" on the Donate screen.
   window.FINLY_DONATE_INFO = {
-    card: "Уточни у @finlytracker_bot",
+    card: "5614 6865 0717 9227",
+    cardHolder: "ABDULAZIZ SOBIRJONOV",
     click: "",
     payme: ""
   };
@@ -2648,6 +2647,7 @@ function DonateScreen({onBack}){
   const[pledgeInput,setPledgeInput]=useState("");
   const[showReport,setShowReport]=useState(false);
   const[reportAmount,setReportAmount]=useState("");
+  const[reportNote,setReportNote]=useState("");
   const[saving,setSaving]=useState(false);
 
   function load(){
@@ -2679,10 +2679,10 @@ function DonateScreen({onBack}){
     try{
       const r=await fetch(API_URL+"/api/donations/report",{
         method:"POST",headers:{"Content-Type":"application/json","X-Init-Data":getInitData()},
-        body:JSON.stringify({amount})
+        body:JSON.stringify({amount,note:reportNote.trim()})
       });
       if(r.ok){
-        const d=await r.json();setMe(d);setShowReport(false);setReportAmount("");
+        const d=await r.json();setMe(d);setShowReport(false);setReportAmount("");setReportNote("");
         load();
       }
     }catch{}
@@ -2751,7 +2751,8 @@ function DonateScreen({onBack}){
         h("div",{style:{fontFamily:F,fontSize:12,fontWeight:800,color:C.ink,marginBottom:8}},"Как оплатить"),
         h("div",{style:{fontSize:12,color:C.ink2,lineHeight:1.6,marginBottom:8}},
           "Переведи любую сумму напрямую и отметь платёж кнопкой выше — всё уходит на благотворительность."),
-        DONATE_INFO.card&&h("div",{style:{fontSize:12,color:C.ink2}},"💳 Карта: ",h("b",{style:{color:C.ink}},DONATE_INFO.card)),
+        DONATE_INFO.card&&h("div",{style:{fontSize:12,color:C.ink2,marginBottom:DONATE_INFO.cardHolder?2:0}},"💳 Карта: ",h("b",{style:{color:C.ink,fontFamily:"'Courier New',monospace"}},DONATE_INFO.card)),
+        DONATE_INFO.cardHolder&&h("div",{style:{fontSize:11,color:C.ink3,marginBottom:8}},DONATE_INFO.cardHolder),
         DONATE_INFO.click&&h("div",{style:{fontSize:12,color:C.ink2}},"Click: ",h("b",{style:{color:C.ink}},DONATE_INFO.click)),
         DONATE_INFO.payme&&h("div",{style:{fontSize:12,color:C.ink2}},"Payme: ",h("b",{style:{color:C.ink}},DONATE_INFO.payme))
       ),
@@ -2793,7 +2794,11 @@ function DonateScreen({onBack}){
         h("div",{style:{fontSize:13,color:C.ink3,marginBottom:18,lineHeight:1.5}},"Отметь только после того, как перевёл(а) деньги. Записывается сразу — доверяем тебе 💜"),
         h("label",{className:"flabel"},"СКОЛЬКО ТЫ ПЕРЕВЁЛ(А)"),
         h("input",{className:"finput",placeholder:"50000",inputMode:"numeric",value:reportAmount,
-          onChange:e=>setReportAmount(e.target.value.replace(/\D/g,"")),style:{marginBottom:22}}),
+          onChange:e=>setReportAmount(e.target.value.replace(/\D/g,"")),style:{marginBottom:14}}),
+        h("label",{className:"flabel"},"КУДА НАПРАВИТЬ ИЛИ ОТЗЫВ (НЕОБЯЗАТЕЛЬНО)"),
+        h("textarea",{className:"finput",style:{marginBottom:22,minHeight:64},
+          placeholder:"Есть идея, куда направить деньги? Или просто хочешь что-то сказать — пиши здесь…",
+          value:reportNote,maxLength:500,onChange:e=>setReportNote(e.target.value)}),
         h("div",{className:"btn btn-ink",style:{width:"100%",background:"#D4537E"},onClick:reportDonation},
           saving?"Сохранение…":"💜 Подтвердить")
       )

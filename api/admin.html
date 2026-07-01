@@ -686,6 +686,10 @@ input::placeholder{color:#444;}
         <span id="don-updated" style="font-size:11px;color:#333;align-self:center;"></span>
       </div>
       <div class="kpi-grid" id="don-kpis"></div>
+      <div class="tcard" id="don-notes-card" style="margin-bottom:14px;display:none;">
+        <div class="tcard-hd"><h2>💭 Notes &amp; Suggestions</h2></div>
+        <div id="don-notes-body" style="padding:10px 16px;"></div>
+      </div>
       <div class="tcard" style="margin-bottom:14px;">
         <div class="tcard-hd">
           <h2 id="don-pledges-title">Active Pledges</h2>
@@ -1870,6 +1874,22 @@ function renderDonationsPage() {
     kpi('❌', donData.donations.filter(d=>d.status==='declined').length, 'Declined', '#f87171'),
   ].join('');
 
+  const withNotes = donData.donations.filter(d => d.note && d.note.trim());
+  const notesCard = document.getElementById('don-notes-card');
+  if (withNotes.length) {
+    notesCard.style.display = '';
+    document.getElementById('don-notes-body').innerHTML = withNotes.slice(0,20).map(d => `
+      <div style="padding:10px 0;border-bottom:1px solid #222;">
+        <div style="font-size:12px;color:#888;margin-bottom:4px;">
+          <b style="color:#e5e5e5;">${esc(d.first_name || d.username || '#'+d.user_id)}</b>
+          &middot; ${Number(d.amount).toLocaleString()} сум &middot; ${esc(d.period)}
+        </div>
+        <div style="font-size:13px;color:#ccc;">${esc(d.note)}</div>
+      </div>`).join('');
+  } else {
+    notesCard.style.display = 'none';
+  }
+
   renderPledges();
   renderDonationsList();
 }
@@ -1904,6 +1924,7 @@ function renderDonationsList() {
     `<tr>
        <td style="font-weight:600;">${esc(d.first_name || d.username || '#'+d.user_id)}
          ${d.username ? `<span class="tag" style="margin-left:4px;">@${esc(d.username)}</span>` : ''}
+         ${d.note ? `<span title="${esc(d.note)}" style="margin-left:6px;cursor:help;">💭</span>` : ''}
        </td>
        <td style="font-weight:600;color:#f472b6;">${Number(d.amount).toLocaleString()} сум</td>
        <td class="tag">${esc(d.period)}</td>

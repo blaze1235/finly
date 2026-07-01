@@ -4784,12 +4784,13 @@ async def report_donation(body: dict, tg_user: dict = Depends(require_user), con
     amount = int(body.get("amount", 0))
     if amount < 100:
         raise HTTPException(400, "Amount too small")
+    note = (body.get("note") or "").strip()[:500]
     period = date.today().strftime("%Y-%m")
     with conn.cursor() as cur:
         cur.execute("""
-            INSERT INTO donations (user_id, amount, period, status)
-            VALUES (%s,%s,%s,'confirmed') RETURNING id
-        """, (uid, amount, period))
+            INSERT INTO donations (user_id, amount, period, status, note)
+            VALUES (%s,%s,%s,'confirmed',%s) RETURNING id
+        """, (uid, amount, period, note))
         cur.execute("""
             SELECT period FROM donations WHERE user_id=%s AND status='confirmed'
         """, (uid,))
@@ -4865,7 +4866,7 @@ def admin_list_donations(token: str = "", conn=Depends(db)):
     with conn.cursor() as cur:
         cur.execute("""
             SELECT d.id, d.user_id, u.first_name, u.username, d.amount, d.period,
-                   d.status, d.created_at
+                   d.status, d.note, d.created_at
             FROM donations d JOIN users u ON u.id = d.user_id
             ORDER BY d.created_at DESC LIMIT 500
         """)
