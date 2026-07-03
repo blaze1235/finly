@@ -829,12 +829,14 @@ function PriorityWidget({alerts,budgetAlerts,setTab}){
 function HomeScreen({data,setTab,onTxTap,alerts}){
   const{txs,streak}=data;
   alerts=alerts||{friends:0,debts:0,goals:0,total:0};
-  // Exclude transactions from deleted accounts from balance calculation
-  const deletedAccNames=(()=>{try{return new Set(JSON.parse(localStorage.getItem("finly_deleted_accounts")||"[]").map(a=>a.name));}catch{return new Set();}})();
-  const activeTxs=txs.filter(t=>!t.account||!deletedAccNames.has(t.account));
-  // Add initial balances from custom accounts (excluding deleted)
+  // Hidden accounts (deleted via Accounts screen or their linked card removed)
+  // must never silently count toward the total — this is the permanent
+  // exclusion list, same one the Accounts screen uses to decide what's shown.
+  const hiddenAccNames=(()=>{try{return new Set(JSON.parse(localStorage.getItem("finly_hidden_accounts")||"[]"));}catch{return new Set();}})();
+  const activeTxs=txs.filter(t=>!t.account||!hiddenAccNames.has(t.account));
+  // Add initial balances from custom accounts (excluding hidden)
   const customAccsInitial=(()=>{try{return JSON.parse(localStorage.getItem("finly_accounts")||"[]");}catch{return[];}})()
-    .filter(a=>!deletedAccNames.has(a.name))
+    .filter(a=>!hiddenAccNames.has(a.name))
     .reduce((s,a)=>s+(a.initial||0),0);
   // Income/expense widgets show CURRENT MONTH only (not all-time)
   const thisMonthPfx=new Date().toISOString().slice(0,7); // "2026-06"
@@ -843,8 +845,26 @@ function HomeScreen({data,setTab,onTxTap,alerts}){
   const expense=monthTxs.filter(t=>t.type==="expense").reduce((a,b)=>a+b.amount,0);
   // Add savings jar balances to total (they represent held funds)
   const savingsTotal=(data.savingsJars||[]).reduce((s,j)=>s+(j.balance||0),0);
+  // data.balance is a server-side SUM across ALL transactions ever — it has no
+  // idea some accounts are hidden client-side, so fetch the true per-account
+  // breakdown and subtract hidden accounts' contribution to stay in sync with
+  // what the Accounts screen actually shows.
+  const[hiddenSum,setHiddenSum]=useState(0);
+  useEffect(()=>{
+    if(hiddenAccNames.size===0)return;
+    const API_URL=window.FINLY_API_URL||"";
+    const initData=window.Telegram?.WebApp?.initData||"";
+    fetch(API_URL+"/api/accounts/summary",{headers:{"X-Init-Data":initData}})
+      .then(r=>r.ok?r.json():null)
+      .then(rows=>{
+        if(!rows)return;
+        let s=0;
+        rows.forEach(r=>{if(hiddenAccNames.has(r.account))s+=r.balance;});
+        setHiddenSum(s);
+      }).catch(()=>{});
+  },[]);
   // Use server-computed true balance if available (covers 200+ transactions), fallback to local calc
-  const balance=data.balance!=null?data.balance+customAccsInitial+savingsTotal:income-expense+customAccsInitial+savingsTotal;
+  const balance=data.balance!=null?data.balance-hiddenSum+customAccsInitial+savingsTotal:income-expense+customAccsInitial+savingsTotal;
   const d=new Date();
   const days=["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
   const mons=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];

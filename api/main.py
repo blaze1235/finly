@@ -3790,6 +3790,34 @@ def admin_cards_stats(token: str = "", conn=Depends(db)):
     }
 
 # ── Admin: single user full detail ────────────────────────────────────────────
+@app.get("/api/admin/users/{user_id}/txs_by_source")
+def admin_txs_by_source(user_id: int, source: str, token: str = "", conn=Depends(db)):
+    """List a user's transactions tagged with a given source (e.g. 'business_bot')
+    — for reviewing/cleaning up bad auto-logged data."""
+    _admin_auth(token)
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT id, type, amount, cat_name, note, account, date_str, created_at
+            FROM transactions WHERE user_id=%s AND source=%s
+            ORDER BY created_at DESC
+        """, (user_id, source))
+        rows = [dict(r) for r in cur.fetchall()]
+    total = sum((r["amount"] if r["type"]=="income" else -r["amount"]) for r in rows)
+    return {"transactions": rows, "count": len(rows), "net_amount": total}
+
+@app.delete("/api/admin/users/{user_id}/txs_by_source")
+def admin_delete_txs_by_source(user_id: int, source: str, token: str = "", conn=Depends(db)):
+    """Bulk-delete a user's transactions tagged with a given source — used to
+    undo bad auto-logged data (e.g. the old Secretary Bot spam)."""
+    _admin_auth(token)
+    with conn.cursor() as cur:
+        cur.execute("""
+            DELETE FROM transactions WHERE user_id=%s AND source=%s RETURNING id
+        """, (user_id, source))
+        deleted = cur.fetchall()
+    conn.commit()
+    return {"deleted": len(deleted)}
+
 @app.get("/api/admin/users/{user_id}/detail")
 def admin_user_detail(user_id: int, token: str = "", conn=Depends(db)):
     _admin_auth(token)
