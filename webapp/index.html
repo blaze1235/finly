@@ -2863,11 +2863,30 @@ function AccountsScreen({data,onBack}){
     }catch{return [];}
   });
 
-  const accMap={};
-  txs.forEach(t=>{
-    const acc=t.account||"Наличка";
-    accMap[acc]=(accMap[acc]||0)+(t.type==="income"?t.amount:-t.amount);
+  // Seed with the client-cached (last 200) transactions so the screen isn't
+  // empty on first paint, then upgrade to the true server-side, full-history
+  // total — the client list is capped and silently diverges from Home's
+  // balance once someone has more than 200 transactions.
+  const[accMap,setAccMap]=useState(()=>{
+    const m={};
+    txs.forEach(t=>{
+      const acc=t.account||"Наличка";
+      m[acc]=(m[acc]||0)+(t.type==="income"?t.amount:-t.amount);
+    });
+    return m;
   });
+  useEffect(()=>{
+    const API_URL=window.FINLY_API_URL||"";
+    const initData=window.Telegram?.WebApp?.initData||"";
+    fetch(API_URL+"/api/accounts/summary",{headers:{"X-Init-Data":initData}})
+      .then(r=>r.ok?r.json():null)
+      .then(rows=>{
+        if(!rows)return;
+        const m={};
+        rows.forEach(r=>{m[r.account]=r.balance;});
+        setAccMap(m);
+      }).catch(()=>{});
+  },[]);
 
   const hiddenAccs=new Set((()=>{try{return JSON.parse(localStorage.getItem("finly_hidden_accounts")||"[]");}catch{return[];}})());
   const allNames=new Set(["Наличка",...Object.keys(accMap),...customAccs.map(a=>a.name)]);

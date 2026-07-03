@@ -4756,6 +4756,22 @@ BANK_COLORS = {
     "MyUzcard":   "#4338CA",
 }
 
+@app.get("/api/accounts/summary")
+def get_accounts_summary(tg_user: dict = Depends(require_user), conn=Depends(db)):
+    """True per-account balance across ALL transactions (not just the last
+    200 loaded client-side) — the Accounts screen's total must match Home's
+    server-computed balance, which sums the full history."""
+    uid = tg_user["id"]
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT COALESCE(account,'Наличка') AS account,
+                   COALESCE(SUM(CASE WHEN type='income' THEN amount ELSE -amount END), 0) AS balance
+            FROM transactions WHERE user_id=%s
+            GROUP BY COALESCE(account,'Наличка')
+        """, (uid,))
+        rows = cur.fetchall()
+    return [{"account": r["account"], "balance": int(r["balance"])} for r in rows]
+
 @app.get("/api/bank_cards")
 def get_bank_cards(tg_user: dict = Depends(require_user), conn=Depends(db)):
     uid = tg_user["id"]
