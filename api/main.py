@@ -259,6 +259,9 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS budget_plan_activated_at TIMESTAMPTZ;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS notif_overtake BOOLEAN NOT NULL DEFAULT TRUE;
 -- Streak restore: admin can offer a one-time "log today, get your streak back"
 ALTER TABLE users ADD COLUMN IF NOT EXISTS streak_restore_to INT;
+-- Set when Telegram returns 403 "bot was blocked by the user" on a send attempt
+ALTER TABLE users ADD COLUMN IF NOT EXISTS bot_blocked BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS bot_blocked_at TIMESTAMPTZ;
 CREATE TABLE IF NOT EXISTS feedback (
     id         BIGSERIAL PRIMARY KEY,
     user_id    BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -589,34 +592,68 @@ def require_user(x_init_data: str = Header(default=""),
 
 import httpx
 
-async def send_tg_message(user_id: int, text: str, reply_markup: dict = None):
-    """Send a Telegram message to a user via bot, with optional inline keyboard."""
+def _mark_bot_blocked(user_id: int, blocked: bool):
+    """Flip a user's bot_blocked flag. Opens its own short-lived connection
+    so callers (message senders) don't need to thread one through."""
+    try:
+        c = get_conn()
+        try:
+            with c.cursor() as cur:
+                if blocked:
+                    cur.execute("UPDATE users SET bot_blocked=TRUE, bot_blocked_at=NOW() WHERE id=%s AND bot_blocked=FALSE", (user_id,))
+                else:
+                    cur.execute("UPDATE users SET bot_blocked=FALSE, bot_blocked_at=NULL WHERE id=%s AND bot_blocked=TRUE", (user_id,))
+            c.commit()
+        finally:
+            c.close()
+    except Exception as e:
+        log.warning(f"Failed to update bot_blocked for {user_id}: {e}")
+
+async def send_tg_message(user_id: int, text: str, reply_markup: dict = None) -> bool:
+    """Send a Telegram message to a user via bot, with optional inline keyboard.
+    Returns True on success. Also tracks whether the user has blocked the bot."""
     if not BOT_TOKEN:
-        return
+        return False
     try:
         payload = {"chat_id": user_id, "text": text, "parse_mode": "HTML"}
         if reply_markup:
             payload["reply_markup"] = json.dumps(reply_markup)
         async with httpx.AsyncClient() as client:
-            await client.post(
+            r = await client.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
                 json=payload,
                 timeout=5,
             )
+        if r.status_code == 403:
+            _mark_bot_blocked(user_id, True)
+            return False
+        if r.status_code == 200:
+            _mark_bot_blocked(user_id, False)
+            return True
+        return False
     except Exception as e:
         log.warning(f"Failed to send TG message to {user_id}: {e}")
+        return False
 
-def send_tg_message_sync(user_id: int, text: str, reply_markup: dict = None):
+def send_tg_message_sync(user_id: int, text: str, reply_markup: dict = None) -> bool:
     """Synchronous Telegram send — safe to call from sync route handlers."""
     if not BOT_TOKEN:
-        return
+        return False
     try:
         payload = {"chat_id": user_id, "text": text, "parse_mode": "HTML", "disable_web_page_preview": True}
         if reply_markup:
             payload["reply_markup"] = json.dumps(reply_markup)
-        httpx.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", json=payload, timeout=8)
+        r = httpx.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", json=payload, timeout=8)
+        if r.status_code == 403:
+            _mark_bot_blocked(user_id, True)
+            return False
+        if r.status_code == 200:
+            _mark_bot_blocked(user_id, False)
+            return True
+        return False
     except Exception as e:
         log.warning(f"sync TG send failed to {user_id}: {e}")
+        return False
 
 def send_feature_guide(user_id: int):
     """Send a one-time feature guide to a newly-onboarded user."""
@@ -3026,7 +3063,7 @@ def admin_list_users(token: str = "", conn=Depends(db)):
                    language, rank_visible, notifs, weekly_report, notif_overtake,
                    budget_plan_active, budget_plan_days, budget_plan_daily, budget_plan_activated_at,
                    sms_token IS NOT NULL AS has_shortcut_token,
-                   ref_code, referred_by,
+                   ref_code, referred_by, bot_blocked, bot_blocked_at,
                    (SELECT COUNT(*) FROM transactions t WHERE t.user_id=users.id) AS tx_count,
                    (SELECT COUNT(*) FROM transactions t WHERE t.user_id=users.id AND t.date_str=CURRENT_DATE) AS logged_today
             FROM users
@@ -3819,7 +3856,10 @@ async def admin_broadcast(body: dict, token: str = "", conn=Depends(db)):
         raise HTTPException(400, "Message required")
     target = body.get("target", "all")  # "all" | "active7d" | "inactive7d" | "no_nickname"
     specific_ids = body.get("user_ids", [])  # list of specific user IDs
-    with_button = body.get("with_button", False)  # add "Open Finly" web_app button
+    with_button = body.get("with_button", False)  # add a CTA button
+    cta_text = (body.get("cta_text") or "🚀 Открыть Finly").strip()
+    cta_url = (body.get("cta_url") or "").strip()
+    skip_blocked = body.get("skip_blocked", True)  # skip users known to have blocked the bot
     with conn.cursor() as cur:
         if specific_ids:
             cur.execute("SELECT id FROM users WHERE id = ANY(%s)", (specific_ids,))
@@ -3834,16 +3874,75 @@ async def admin_broadcast(body: dict, token: str = "", conn=Depends(db)):
             """)
         else:
             cur.execute("SELECT id FROM users")
-        user_ids = [r["id"] for r in cur.fetchall()]
-    kb = {"inline_keyboard": [[{"text": "🚀 Открыть Finly", "web_app": {"url": APP_URL}}]]} if with_button else None
-    sent, failed = 0, 0
+        rows = cur.fetchall()
+        user_ids = [r["id"] for r in rows]
+        if skip_blocked:
+            cur.execute("SELECT id FROM users WHERE bot_blocked=TRUE AND id = ANY(%s)", (user_ids,))
+            blocked_ids = {r["id"] for r in cur.fetchall()}
+            user_ids = [uid for uid in user_ids if uid not in blocked_ids]
+        else:
+            blocked_ids = set()
+    # CTA: a custom URL opens as a normal link button; otherwise default to
+    # the Finly web_app button (opens inside Telegram as a Mini App).
+    btn = {"text": cta_text, "url": cta_url} if cta_url else {"text": cta_text, "web_app": {"url": APP_URL}}
+    kb = {"inline_keyboard": [[btn]]} if with_button else None
+    sent, failed, blocked = 0, 0, len(blocked_ids)
     for uid in user_ids:
-        try:
-            await send_tg_message(uid, msg, kb)
+        ok = await send_tg_message(uid, msg, kb)
+        if ok:
             sent += 1
-        except Exception:
+        else:
             failed += 1
-    return {"sent": sent, "failed": failed, "total": len(user_ids)}
+    return {"sent": sent, "failed": failed, "blocked_skipped": blocked, "total": len(user_ids) + blocked}
+
+@app.get("/api/admin/blocked_users")
+def admin_blocked_users(token: str = "", conn=Depends(db)):
+    """List users who have blocked the bot (detected on a prior send attempt)."""
+    _admin_auth(token)
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT id, first_name, username, bot_blocked_at,
+                   (SELECT COUNT(*) FROM transactions t WHERE t.user_id=users.id) AS tx_count
+            FROM users WHERE bot_blocked=TRUE
+            ORDER BY bot_blocked_at DESC
+        """)
+        rows = [dict(r) for r in cur.fetchall()]
+    return {"blocked": rows, "count": len(rows)}
+
+@app.post("/api/admin/refresh_blocked")
+async def admin_refresh_blocked(token: str = "", conn=Depends(db)):
+    """Probe every user's block status without sending a visible message —
+    uses sendChatAction (a typing indicator), which Telegram also 403s for
+    users who blocked the bot. Updates bot_blocked for everyone, both ways."""
+    _admin_auth(token)
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM users")
+        user_ids = [r["id"] for r in cur.fetchall()]
+    newly_blocked, newly_unblocked, checked = 0, 0, 0
+    async with httpx.AsyncClient() as client:
+        for uid in user_ids:
+            try:
+                r = await client.post(
+                    f"https://api.telegram.org/bot{BOT_TOKEN}/sendChatAction",
+                    json={"chat_id": uid, "action": "typing"},
+                    timeout=5,
+                )
+                checked += 1
+                if r.status_code == 403:
+                    with conn.cursor() as cur:
+                        cur.execute("UPDATE users SET bot_blocked=TRUE, bot_blocked_at=NOW() WHERE id=%s AND bot_blocked=FALSE RETURNING id", (uid,))
+                        if cur.fetchone():
+                            newly_blocked += 1
+                    conn.commit()
+                elif r.status_code == 200:
+                    with conn.cursor() as cur:
+                        cur.execute("UPDATE users SET bot_blocked=FALSE, bot_blocked_at=NULL WHERE id=%s AND bot_blocked=TRUE RETURNING id", (uid,))
+                        if cur.fetchone():
+                            newly_unblocked += 1
+                    conn.commit()
+            except Exception:
+                pass
+    return {"checked": checked, "newly_blocked": newly_blocked, "newly_unblocked": newly_unblocked}
 
 # ── Admin: Send daily reminders ───────────────────────────────────────────────
 @app.post("/api/admin/send_reminders")

@@ -540,13 +540,30 @@ input::placeholder{color:#444;}
             <label style="display:block;font-size:11px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">MESSAGE <span style="color:#333;">(HTML supported)</span></label>
             <textarea id="bc-message" style="width:100%;min-height:140px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:10px;color:#e5e5e5;font-size:13px;padding:12px 14px;resize:vertical;font-family:monospace;outline:none;" placeholder="Привет! 👋&#10;&#10;Добавлено новое обновление в <b>Finly</b>!"></textarea>
           </div>
+          <div style="margin-bottom:18px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:10px;">
+              <input type="checkbox" id="bc-with-button" style="accent-color:#f59e0b;" onchange="document.getElementById('bc-cta-fields').style.display=this.checked?'flex':'none'">
+              <span style="font-size:12px;font-weight:700;color:#ccc;text-transform:uppercase;letter-spacing:1px;">Add CTA button</span>
+            </label>
+            <div id="bc-cta-fields" style="display:none;flex-direction:column;gap:8px;padding:12px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:10px;">
+              <input id="bc-cta-text" placeholder="Button text (e.g. 💬 Оставить отзыв)" style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#e5e5e5;padding:8px 12px;font-size:13px;box-sizing:border-box;">
+              <input id="bc-cta-url" placeholder="URL (leave empty to open Finly itself)" style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#e5e5e5;padding:8px 12px;font-size:13px;box-sizing:border-box;">
+              <div style="font-size:11px;color:#555;">Leave URL empty for the default "Open Finly" button. Set it (e.g. a feedback page link) to point anywhere else.</div>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="bc-skip-blocked" checked style="accent-color:#f59e0b;">
+              <span style="font-size:12px;color:#888;">Skip users known to have blocked the bot</span>
+            </label>
+          </div>
           <div style="display:flex;gap:10px;align-items:center;">
             <button class="btn btn-ink" style="flex:1;" onclick="sendBroadcast()">📤 Отправить</button>
             <button class="btn btn-gray" onclick="sendReminders()">🔔 Напомнить сегодня</button>
           </div>
           <div id="bc-result" style="margin-top:14px;font-size:13px;color:#555;"></div>
         </div>
-        <div class="tcard" style="padding:24px;">
+        <div class="tcard" style="padding:24px;margin-bottom:16px;">
           <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;">Tips</div>
           <div style="font-size:12px;color:#555;line-height:1.8;">
             • Supports Telegram HTML: <code style="background:#1a1a1a;padding:2px 6px;border-radius:4px;color:#f59e0b;">&lt;b&gt;bold&lt;/b&gt;</code><br>
@@ -555,6 +572,14 @@ input::placeholder{color:#444;}
             • Use emojis freely 🎉<br><br>
             <b style="color:#888;">Reminder button</b> sends the daily 18:00 reminder to everyone who hasn't logged today.
           </div>
+        </div>
+        <div class="tcard" style="padding:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-size:13px;font-weight:700;color:#fff;">🚫 Blocked the bot</div>
+            <button class="btn btn-gray" style="padding:5px 10px;font-size:11px;" onclick="refreshBlocked()">↻ Refresh</button>
+          </div>
+          <div id="blocked-summary" style="font-size:11px;color:#555;margin-bottom:10px;">Loading…</div>
+          <div id="blocked-list" style="max-height:260px;overflow-y:auto;"></div>
         </div>
       </div>
     </div>
@@ -892,6 +917,7 @@ function showPage(p) {
   if (p === 'ranks' && !allRanks.length) loadRanks();
   if (p === 'cards') loadCards();
   if (p === 'donations') loadDonations();
+  if (p === 'broadcast') loadBlockedUsers();
   if (p === 'feedback') loadFeedback();
   if (p === 'finlyfast') loadFinlyFast();
   if (p === 'xplogs') loadXpLogs();
@@ -1493,7 +1519,14 @@ async function sendBroadcast() {
   const res = document.getElementById('bc-result');
   res.textContent = 'Sending…';
   try {
-    const body = { message: msg, target };
+    const withButton = document.getElementById('bc-with-button').checked;
+    const body = {
+      message: msg, target,
+      with_button: withButton,
+      cta_text: document.getElementById('bc-cta-text').value.trim(),
+      cta_url: document.getElementById('bc-cta-url').value.trim(),
+      skip_blocked: document.getElementById('bc-skip-blocked').checked,
+    };
     if (target === 'specific') {
       if (!bcSelectedUsers.size) { res.innerHTML = `<span style="color:#f59e0b;">Select at least one user</span>`; return; }
       body.user_ids = Array.from(bcSelectedUsers);
@@ -1503,7 +1536,7 @@ async function sendBroadcast() {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(body)
     });
-    res.innerHTML = `<span style="color:#16a34a;">✓ Sent: ${data.sent}</span> &nbsp; <span style="color:#666;">Failed: ${data.failed}</span> &nbsp; <span style="color:#555;">Total: ${data.total}</span>`;
+    res.innerHTML = `<span style="color:#16a34a;">✓ Sent: ${data.sent}</span> &nbsp; <span style="color:#666;">Failed: ${data.failed}</span> &nbsp; <span style="color:#888;">Blocked (skipped): ${data.blocked_skipped}</span> &nbsp; <span style="color:#555;">Total: ${data.total}</span>`;
   } catch(e) { res.innerHTML = `<span style="color:#ef4444;">Error: ${esc(e.message)}</span>`; }
 }
 async function sendReminders() {
@@ -1513,6 +1546,34 @@ async function sendReminders() {
     const data = await apiFetch('/api/admin/send_reminders', { method: 'POST' });
     res.innerHTML = `<span style="color:#16a34a;">✓ Reminders sent: ${data.sent}</span>`;
   } catch(e) { res.innerHTML = `<span style="color:#ef4444;">Error: ${esc(e.message)}</span>`; }
+}
+
+async function loadBlockedUsers() {
+  const summary = document.getElementById('blocked-summary');
+  const list = document.getElementById('blocked-list');
+  summary.textContent = 'Loading…';
+  try {
+    const data = await apiFetch('/api/admin/blocked_users');
+    summary.innerHTML = `<b style="color:#f87171;">${data.count}</b> user${data.count===1?'':'s'} have blocked the bot`;
+    list.innerHTML = data.blocked.map(u => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid #1a1a1a;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#ccc;">${esc(u.first_name || u.username || '#'+u.id)}</div>
+          <div style="font-size:10px;color:#555;">${u.username ? '@'+esc(u.username) : ''} ${u.tx_count} txs</div>
+        </div>
+        <div style="font-size:10px;color:#555;">${(u.bot_blocked_at||'').slice(0,16).replace('T',' ')}</div>
+      </div>`).join('') || '<div style="font-size:12px;color:#555;padding:8px 0;">None detected yet — try Refresh.</div>';
+  } catch(e) { summary.innerHTML = `<span style="color:#ef4444;">Error loading</span>`; }
+}
+
+async function refreshBlocked() {
+  const summary = document.getElementById('blocked-summary');
+  summary.textContent = 'Checking all users — this can take a bit…';
+  try {
+    const data = await apiFetch('/api/admin/refresh_blocked', { method: 'POST' });
+    showToast(`Checked ${data.checked} · +${data.newly_blocked} blocked · -${data.newly_unblocked} unblocked`, true);
+    loadBlockedUsers();
+  } catch(e) { showToast('Refresh failed: ' + e.message, false); }
 }
 
 /* ── DB Tables ── */

@@ -2928,11 +2928,16 @@ function AccountsScreen({data,onBack}){
   }
   async function updateAccount(){
     if(!editAcc)return;
-    const{origName,name,icon,initial,cardId}=editAcc;
+    const{origName,name,icon,cardId}=editAcc;
     const trimmed=name.trim()||origName;
-    const upd=customAccs.map(a=>a.name===origName?{...a,name:trimmed,icon,initial:parseInt(initial)||0}:a);
+    // The field is the balance the user WANTS to see, not a raw offset — back
+    // out the "initial" adjustment needed on top of this account's real
+    // transaction history so the displayed total matches exactly.
+    const targetBalance=parseInt(editAcc.balance)||0;
+    const initial=targetBalance-(accMap[origName]||0);
+    const upd=customAccs.map(a=>a.name===origName?{...a,name:trimmed,icon,initial}:a);
     const exists=customAccs.find(a=>a.name===origName);
-    const final=exists?upd:[...customAccs,{name:trimmed,icon:editAcc.icon,initial:parseInt(editAcc.initial)||0,...(cardId?{cardId}:{})}];
+    const final=exists?upd:[...customAccs,{name:trimmed,icon:editAcc.icon,initial,...(cardId?{cardId}:{})}];
     setCustomAccs(final);
     localStorage.setItem("finly_accounts",JSON.stringify(final));
     if(defAcc===origName&&trimmed!==origName){
@@ -2964,7 +2969,7 @@ function AccountsScreen({data,onBack}){
         h("div",{style:{fontFamily:F,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"ОБЩИЙ БАЛАНС"),
         h("div",{style:{fontFamily:F,fontSize:32,fontWeight:800,color:total>=0?"#fff":C.rd,lineHeight:1.1,marginBottom:4}},
           fmt(Math.abs(total))," ",h("span",{style:{fontSize:16,color:"rgba(255,255,255,.4)"}},"сум")),
-        h("div",{style:{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:16}},"Все счета вместе"),
+        h("div",{style:{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:16}},"Сумма всех счетов ниже — измени нужный счёт, чтобы поправить"),
         h("div",{style:{height:1,background:"rgba(255,255,255,.08)",marginBottom:16}}),
         h("div",{style:{fontFamily:F,fontSize:9,fontWeight:700,color:"rgba(255,255,255,.3)",letterSpacing:2,textTransform:"uppercase",marginBottom:8}},"СЧЁТ ПО УМОЛЧАНИЮ"),
         h("div",{style:{fontFamily:F,fontSize:15,fontWeight:700,color:"#fff"}},defAcc)
@@ -2982,7 +2987,7 @@ function AccountsScreen({data,onBack}){
         h("div",{style:{display:"flex",gap:8}},
           h("div",{onClick:()=>{
               const linked=customAccs.find(c=>c.name===a.name);
-              setEditAcc({origName:a.name,name:a.name,icon:a.icon,initial:linked?.initial||0,cardId:linked?.cardId||null});
+              setEditAcc({origName:a.name,name:a.name,icon:a.icon,balance:String(a.balance),cardId:linked?.cardId||null});
             },
             style:{flex:1,padding:"9px",borderRadius:12,background:C.bg,fontFamily:F,fontSize:11,fontWeight:700,color:C.ink,textAlign:"center",cursor:"pointer"}},"✏️ Изменить"),
           h("div",{onClick:()=>setDefault(a.name),
@@ -3055,9 +3060,12 @@ function AccountsScreen({data,onBack}){
             style:{aspectRatio:"1",borderRadius:12,background:editAcc.icon===ic?C.ink:C.bg,
               display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,cursor:"pointer",transition:"all .12s"}},ic))
         ),
-        h("label",{className:"flabel"},"НАЧАЛЬНЫЙ БАЛАНС (СУМ)"),
-        h("input",{className:"finput",style:{marginBottom:20},inputMode:"numeric",placeholder:"0",
-          value:editAcc.initial,onChange:e=>setEditAcc({...editAcc,initial:e.target.value})}),
+        h("label",{className:"flabel"},"ТЕКУЩИЙ БАЛАНС (СУМ)"),
+        h("input",{className:"finput",style:{marginBottom:8},inputMode:"numeric",placeholder:"0",
+          value:editAcc.balance,onChange:e=>setEditAcc({...editAcc,balance:e.target.value})}),
+        h("div",{onClick:()=>setEditAcc({...editAcc,balance:"0"}),
+          style:{fontSize:12,color:C.ink3,marginBottom:20,cursor:"pointer",textDecoration:"underline",display:"inline-block"}},
+          "Обнулить баланс"),
         h("div",{style:{display:"flex",gap:10}},
           h("div",{className:"btn btn-gray",style:{flex:1},onClick:()=>setEditAcc(null)},"Отмена"),
           h("div",{className:"btn btn-ink",style:{flex:2},onClick:updateAccount},"Сохранить")
